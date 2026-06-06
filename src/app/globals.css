@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root { --brand: #7c3aed; }
+  html { -webkit-tap-highlight-color: transparent; }
+  body { @apply bg-gray-50 text-gray-900 antialiased; }
+}
+
+input[type="range"] { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--brand); margin-top: -5px; }
+input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: #e5e7eb; }
+input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--brand); border: none; }
+input[type="range"]::-moz-range-track { height: 4px; border-radius: 2px; background: #e5e7eb; }
