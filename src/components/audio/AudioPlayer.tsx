@@ -263,7 +263,18 @@ export default function AudioPlayer({
         onLoadedMetadata={() => { if (audioRef.current) { setDuration(audioRef.current.duration); audioRef.current.currentTime = initialPosition; } }}
         onEnded={handleEnded}
         onWaiting={() => setLoading(true)}
-        onCanPlay={() => setLoading(false)}
+        onCanPlay={() => {
+          setLoading(false);
+
+          const audio = audioRef.current;
+          if (!audio) return;
+
+          audio.play()
+            .then(() => setPlaying(true))
+            .catch(err => {
+              console.log("Autoplay blocked:", err);
+            });
+        }}
       />
     </div>
   );
