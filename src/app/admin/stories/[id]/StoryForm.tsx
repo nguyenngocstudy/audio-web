@@ -145,7 +145,12 @@ export default function StoryForm({ story }: { story: Story | null }) {
       {/* Genre */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Thể loại</label>
-        <select value={f.genre} onChange={e => setF({ ...f, genre: e.target.value })}
+          <select value={f.genre} onChange={e =>
+          setF({
+            ...f,
+            genre: e.target.value as typeof f.genre
+          })
+        }
           className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-400">
           {GENRES.map(g => <option key={g.v} value={g.v}>{g.l}</option>)}
         </select>
