@@ -4,7 +4,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const genreEnum = pgEnum("genre", [
-  "tinh_cam","ngon_tinh","co_dai","huyen_huyen","tram_cam","hanh_dong",
+  "ngon_tinh","tra_xanh","trinh_tham","co_dai","hoc_duong","hai_huoc","hanh_dong",
 ]);
 export const txTypeEnum = pgEnum("tx_type", [
   "subscription","coin_topup","chapter_unlock",
@@ -87,3 +87,58 @@ export type User        = typeof users.$inferSelect;
 export type Story       = typeof stories.$inferSelect;
 export type Chapter     = typeof chapters.$inferSelect;
 export type Transaction = typeof transactions.$inferSelect;
+
+// ─── Community ────────────────────────────────────────────────────────────────
+
+export const postTypeEnum = pgEnum("post_type", [
+  "discussion","suggestion","question","bug_report",
+]);
+
+export const notificationTypeEnum = pgEnum("notification_type", [
+  "reply","like","admin_reply","system",
+]);
+
+export const communityPosts = pgTable("community_posts", {
+  id:         uuid("id").defaultRandom().primaryKey(),
+  userId:     uuid("user_id").notNull().references(()=>users.id,{onDelete:"cascade"}),
+  type:       postTypeEnum("type").notNull().default("discussion"),
+  content:    text("content").notNull(),
+  likeCount:  integer("like_count").notNull().default(0),
+  replyCount: integer("reply_count").notNull().default(0),
+  isPinned:   boolean("is_pinned").notNull().default(false),
+  isHidden:   boolean("is_hidden").notNull().default(false),
+  createdAt:  timestamp("created_at").notNull().defaultNow(),
+  updatedAt:  timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const communityComments = pgTable("community_comments", {
+  id:        uuid("id").defaultRandom().primaryKey(),
+  postId:    uuid("post_id").notNull().references(()=>communityPosts.id,{onDelete:"cascade"}),
+  userId:    uuid("user_id").notNull().references(()=>users.id,{onDelete:"cascade"}),
+  parentId:  uuid("parent_id"), // null = top-level, uuid = reply to comment
+  content:   text("content").notNull(),
+  isHidden:  boolean("is_hidden").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const communityLikes = pgTable("community_likes", {
+  id:        uuid("id").defaultRandom().primaryKey(),
+  userId:    uuid("user_id").notNull().references(()=>users.id,{onDelete:"cascade"}),
+  postId:    uuid("post_id").notNull().references(()=>communityPosts.id,{onDelete:"cascade"}),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const notifications = pgTable("notifications", {
+  id:        uuid("id").defaultRandom().primaryKey(),
+  userId:    uuid("user_id").notNull().references(()=>users.id,{onDelete:"cascade"}),
+  type:      notificationTypeEnum("type").notNull().default("system"),
+  title:     varchar("title",{length:255}).notNull(),
+  body:      text("body"),
+  link:      text("link"),
+  isRead:    boolean("is_read").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export type CommunityPost    = typeof communityPosts.$inferSelect;
+export type CommunityComment = typeof communityComments.$inferSelect;
+export type Notification     = typeof notifications.$inferSelect;

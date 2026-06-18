@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { db } from "@/lib/db";
 import { stories } from "@/lib/schema";
 import { desc } from "drizzle-orm";

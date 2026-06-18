@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { db } from "@/lib/db";
 import { sql } from "drizzle-orm";
 import Badge from "@/components/ui/Badge";

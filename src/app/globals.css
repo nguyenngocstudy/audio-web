@@ -2,14 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root { --brand: #7c3aed; }
-  html { -webkit-tap-highlight-color: transparent; }
-  body { @apply bg-gray-50 text-gray-900 antialiased; }
+/* ── CSS Variables ──────────────────────────────────────────────────────────── */
+:root {
+  --accent:       #7c3aed;
+  --accent-rgb:   124 58 237;
+  --accent-hover: #6d28d9;
+  --accent-light: #7c3aed22;
+  --accent-text:  #5b21b6;
+  --card-bg:      #1a1a2e;
 }
 
+/* ── Base ────────────────────────────────────────────────────────────────────── */
+@layer base {
+  html { -webkit-tap-highlight-color: transparent; color-scheme: light; }
+  html.dark { color-scheme: dark; }
+  body {
+    @apply antialiased;
+    background-color: rgb(249 250 251);
+    color: rgb(17 24 39);
+  }
+  .dark body { background-color: rgb(10 10 15) !important; color: rgb(243 244 246); }
+}
+
+/* ── Dark overrides ──────────────────────────────────────────────────────────── */
+.dark .bg-white              { background-color: rgb(17 24 39) !important; }
+.dark .bg-gray-50            { background-color: rgb(10 10 15) !important; }
+.dark .bg-gray-100           { background-color: rgb(31 41 55) !important; }
+.dark .border-gray-100       { border-color: rgb(31 41 55) !important; }
+.dark .border-gray-200       { border-color: rgb(55 65 81) !important; }
+.dark .text-gray-900         { color: rgb(243 244 246) !important; }
+.dark .text-gray-800         { color: rgb(229 231 235) !important; }
+.dark .text-gray-700         { color: rgb(209 213 219) !important; }
+.dark .text-gray-600         { color: rgb(156 163 175) !important; }
+.dark .text-gray-500         { color: rgb(107 114 128) !important; }
+.dark nav { background-color: rgba(10,10,15,0.92) !important; border-color: rgb(31 41 55) !important; }
+.dark .hover\:bg-gray-50:hover  { background-color: rgb(31 41 55) !important; }
+.dark .hover\:bg-gray-100:hover { background-color: rgb(55 65 81) !important; }
+
+/* ── Brand → CSS var ─────────────────────────────────────────────────────────── */
+.bg-brand-600                        { background-color: var(--accent) !important; }
+.bg-brand-700,
+.hover\:bg-brand-700:hover           { background-color: var(--accent-hover) !important; }
+.text-brand-600                      { color: var(--accent) !important; }
+.text-brand-700                      { color: var(--accent-text) !important; }
+.border-brand-500                    { border-color: var(--accent) !important; }
+.bg-brand-50, .bg-brand-100          { background-color: var(--accent-light) !important; }
+.focus\:ring-brand-400:focus,
+.focus\:ring-brand-500:focus         { --tw-ring-color: var(--accent) !important; }
+
+/* ── Audio range slider ─────────────────────────────────────────────────────── */
 input[type="range"] { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
-input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--brand); margin-top: -5px; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); margin-top: -5px; }
 input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: #e5e7eb; }
-input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--brand); border: none; }
-input[type="range"]::-moz-range-track { height: 4px; border-radius: 2px; background: #e5e7eb; }
+.dark input[type="range"]::-webkit-slider-runnable-track { background: #374151; }
+input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: none; }
+
+/* ── Hide scrollbar but allow scroll ────────────────────────────────────────── */
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* ── Animations ─────────────────────────────────────────────────────────────── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-spin { animation: spin 1s linear infinite; }

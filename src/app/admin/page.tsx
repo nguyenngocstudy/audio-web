@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getOverviewStats, getMonthlyRevenue, getDailyNewUsers, getTopStories, getRecentTransactions, getRevenueByType } from "@/lib/admin-stats";
 import StatCard from "./_components/StatCard";
 import RevenueChart from "./_components/RevenueChart";

@@ -7,10 +7,10 @@ export const payos = new PayOS(
 );
 
 export const PLANS = {
-  monthly: { label: "VIP 1 tháng",  price: 49000,  days: 30,  coins: 0   },
-  yearly:  { label: "VIP 1 năm",    price: 399000, days: 365, coins: 0   },
-  coin100: { label: "100 coin",      price: 20000,  days: 0,   coins: 100 },
-  coin500: { label: "500 coin",      price: 89000,  days: 0,   coins: 500 },
+  monthly:   { label: "VIP 1 thang",   price: 37000,  days: 30,  coins: 0 },
+  quarterly: { label: "VIP 3 thang",   price: 99000, days: 90,  coins: 0 },
+  biannual:  { label: "VIP 6 thang",   price: 169000, days: 180, coins: 0 },
+  yearly:    { label: "VIP 12 thang",  price: 289000, days: 365, coins: 0 },
 } as const;
 
 export type PlanKey = keyof typeof PLANS;

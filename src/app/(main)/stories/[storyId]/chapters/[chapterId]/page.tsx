@@ -7,10 +7,13 @@ import AudioPlayer from "@/components/audio/AudioPlayer";
 import Link from "next/link";
 import { fmtDuration } from "@/lib/utils";
 
-export default async function ChapterPage({ params }: { params: { storyId: string; chapterId: string } }) {
+export default async function ChapterPage({ params }: {
+  params: { storyId: string; chapterId: string }
+}) {
   const session = await auth();
 
-  const [story] = await db.select().from(stories).where(eq(stories.id, params.storyId)).limit(1);
+  const [story] = await db.select().from(stories)
+    .where(eq(stories.id, params.storyId)).limit(1);
   if (!story) notFound();
 
   const [chapter] = await db.select().from(chapters)
@@ -37,7 +40,8 @@ export default async function ChapterPage({ params }: { params: { storyId: strin
         .limit(1))[0]
     : null;
 
-  const allChapters = await db.select({ id: chapters.id, chapterNumber: chapters.chapterNumber, title: chapters.title })
+  const allChapters = await db
+    .select({ id: chapters.id, chapterNumber: chapters.chapterNumber, title: chapters.title, durationSec: chapters.durationSec })
     .from(chapters)
     .where(and(eq(chapters.storyId, story.id), eq(chapters.isPublished, true)))
     .orderBy(asc(chapters.chapterNumber));
@@ -46,17 +50,19 @@ export default async function ChapterPage({ params }: { params: { storyId: strin
   const next = allChapters[idx + 1] ?? null;
   const prev = allChapters[idx - 1] ?? null;
 
+  const nextChapterUrl = next ? `/stories/${story.id}/chapters/${next.id}` : undefined;
+
   return (
-    <div className="max-w-lg mx-auto">
-      <div className="flex items-center gap-2 text-sm text-gray-400 mb-4">
-        <Link href="/" className="hover:text-gray-600">Trang chủ</Link>
-        <i className="ti ti-chevron-right" style={{ fontSize: 13 }} />
-        <Link href={`/stories/${story.id}`} className="hover:text-gray-600 truncate max-w-[160px]">{story.title}</Link>
-        <i className="ti ti-chevron-right" style={{ fontSize: 13 }} />
-        <span className="text-gray-600">Ch.{chapter.chapterNumber}</span>
+    <div className="max-w-2xl mx-auto">
+      <div className="flex items-center gap-2 text-xs text-gray-500 mb-5 flex-wrap">
+        <Link href="/" className="hover:text-gray-300 transition-colors">Trang chủ</Link>
+        <i className="ti ti-chevron-right" style={{ fontSize: 11 }} />
+        <Link href={`/stories/${story.id}`} className="hover:text-gray-300 transition-colors truncate max-w-[180px]">{story.title}</Link>
+        <i className="ti ti-chevron-right" style={{ fontSize: 11 }} />
+        <span className="text-gray-400">Ch.{chapter.chapterNumber}</span>
       </div>
 
-      <h1 className="text-lg font-bold text-gray-900 mb-4">{chapter.title}</h1>
+      <h1 className="text-lg font-bold text-white mb-5">{chapter.title}</h1>
 
       <AudioPlayer
         audioUrl={chapter.audioUrl}
@@ -65,32 +71,45 @@ export default async function ChapterPage({ params }: { params: { storyId: strin
         coverUrl={story.coverUrl ?? undefined}
         chapterId={chapter.id}
         initialPosition={progress?.positionSec ?? 0}
+        nextChapterUrl={nextChapterUrl}
       />
 
-      <div className="flex items-center justify-between mt-4 gap-3">
+      <div className="flex items-center justify-between mt-5 gap-3">
         {prev ? (
           <Link href={`/stories/${story.id}/chapters/${prev.id}`}
-            className="flex items-center gap-2 px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-            <i className="ti ti-chevron-left" style={{ fontSize: 15 }} />Chương trước
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/10 text-sm text-gray-300 hover:text-white hover:border-white/20 transition-all"
+            style={{ backgroundColor: "rgba(255,255,255,0.04)" }}>
+            <i className="ti ti-chevron-left" style={{ fontSize: 15 }} />
+            <span className="hidden sm:inline">Chương trước</span>
+            <span className="sm:hidden">Trước</span>
           </Link>
         ) : <div />}
         {next ? (
           <Link href={`/stories/${story.id}/chapters/${next.id}`}
-            className="flex items-center gap-2 px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium transition-colors">
-            Chương sau<i className="ti ti-chevron-right" style={{ fontSize: 15 }} />
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-white font-medium transition-all hover:opacity-90"
+            style={{ backgroundColor: "var(--accent)" }}>
+            <span className="hidden sm:inline">Chương sau</span>
+            <span className="sm:hidden">Sau</span>
+            <i className="ti ti-chevron-right" style={{ fontSize: 15 }} />
           </Link>
         ) : <div />}
       </div>
 
-      <div className="mt-6 bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <p className="px-4 py-3 text-sm font-semibold text-gray-700 border-b border-gray-50">Các chương ({allChapters.length})</p>
-        <div className="divide-y divide-gray-50 max-h-72 overflow-y-auto">
+      <div className="mt-6 rounded-xl border border-white/8 overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.02)" }}>
+        <div className="px-4 py-3 border-b border-white/8">
+          <p className="text-sm font-semibold text-white">Các chương ({allChapters.length})</p>
+        </div>
+        <div className="divide-y divide-white/5 max-h-72 overflow-y-auto">
           {allChapters.map(c => (
             <Link key={c.id} href={`/stories/${story.id}/chapters/${c.id}`}
-              className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${c.id === chapter.id ? "bg-brand-50 text-brand-700 font-medium" : "text-gray-600 hover:bg-gray-50"}`}>
-              <span className="w-8 text-center text-xs text-gray-400">{c.chapterNumber}</span>
+              className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
+                c.id === chapter.id ? "font-medium" : "text-gray-400 hover:text-gray-200 hover:bg-white/3"
+              }`}
+              style={c.id === chapter.id ? { backgroundColor: "var(--accent-light)", color: "var(--accent)" } : {}}>
+              <span className="w-7 text-center text-xs text-gray-500 flex-shrink-0">{c.chapterNumber}</span>
               <span className="flex-1 truncate">{c.title}</span>
-              {c.id === chapter.id && <i className="ti ti-volume text-brand-600" style={{ fontSize: 14 }} />}
+              {c.durationSec && <span className="text-xs text-gray-600 flex-shrink-0">{fmtDuration(c.durationSec)}</span>}
+              {c.id === chapter.id && <i className="ti ti-volume flex-shrink-0" style={{ fontSize: 14, color: "var(--accent)" }} />}
             </Link>
           ))}
         </div>

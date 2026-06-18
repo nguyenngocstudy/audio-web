@@ -13,13 +13,26 @@ async function requireAdmin() {
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  
+  console.log("PATCH called");
   if (!await requireAdmin()) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   const body = await req.json();
+
+  // Log để debug
+  console.log("PATCH story body:", JSON.stringify(body));
+
   const [updated] = await db.update(stories).set({
-    title: body.title, author: body.author ?? null, narrator: body.narrator ?? null,
-    description: body.description ?? null, genre: body.genre,
-    isPublished: body.isPublished, updatedAt: new Date(),
+    title:       body.title,
+    author:      body.author      ?? null,
+    narrator:    body.narrator    ?? null,
+    description: body.description ?? null,
+    genre:       body.genre,
+    coverUrl:    body.coverUrl    ?? null,   // ← FIX: thêm field này
+    isPublished: body.isPublished,
+    updatedAt:   new Date(),
   }).where(eq(stories.id, params.id)).returning();
+
+  console.log("PATCH story result coverUrl:", updated?.coverUrl);
   return NextResponse.json(updated);
 }
 
