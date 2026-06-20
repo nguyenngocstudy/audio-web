@@ -120,12 +120,12 @@ export default function Navbar() {
                         <i className={`ti ${item.icon}`} style={{ fontSize: 15 }} />{item.label}
                       </Link>
                     ))}
-                    {me && (
+                    {/* {me && (
                       <div className="px-4 py-2 border-t border-white/8 mt-1">
                         <p className="text-xs text-gray-500">Số dư</p>
-                        <p className="text-sm font-semibold text-amber-400">{me.coinBalance.toLocaleString()} coin</p>
+                        <p className="text-sm font-semibold text-amber-400">{} coin</p>
                       </div>
-                    )}
+                    )} */}
                     <div className="h-px bg-white/8 my-1" />
                     <button onClick={() => signOut({ callbackUrl: "/login" })}
                       className="flex items-center gap-2.5 px-4 py-2 text-sm text-rose-400 hover:bg-rose-500/10 w-full transition-colors">

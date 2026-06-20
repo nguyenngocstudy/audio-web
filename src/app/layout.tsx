@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+// Import Tabler Icons từ npm package thay vì CDN
+import "@tabler/icons-webfont/dist/tabler-icons.min.css";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 
@@ -24,12 +26,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="vi" suppressHydrationWarning>
       <head>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/dist/tabler-icons.min.css" />
-        {/* Inline script to apply theme BEFORE first paint - prevents flash */}
+        {/* Anti-flash theme script */}
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
             try {
-              var mode = localStorage.getItem('theme-mode') || 'light';
+              var mode = localStorage.getItem('theme-mode') || 'dark';
               var accent = localStorage.getItem('theme-accent') || '#7c3aed';
               var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
               var isDark = mode === 'dark' || (mode === 'system' && prefersDark);
@@ -43,12 +44,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 var b=Math.min(255,Math.max(0,Math.round(parseInt(h.slice(5,7),16)*f)));
                 return '#'+(r<16?'0':'')+r.toString(16)+(g<16?'0':'')+g.toString(16)+(b<16?'0':'')+b.toString(16);
               }
-              var r = document.documentElement;
-              r.style.setProperty('--accent', accent);
-              r.style.setProperty('--accent-rgb', hexToRgb(accent));
-              r.style.setProperty('--accent-hover', shade(accent, 0.85));
-              r.style.setProperty('--accent-light', shade(accent, 1.6) + '33');
-              r.style.setProperty('--accent-text', shade(accent, 0.7));
+              var root = document.documentElement;
+              root.style.setProperty('--accent', accent);
+              root.style.setProperty('--accent-rgb', hexToRgb(accent));
+              root.style.setProperty('--accent-hover', shade(accent, 0.85));
+              root.style.setProperty('--accent-light', shade(accent, 1.6) + '33');
+              root.style.setProperty('--accent-text', shade(accent, 0.7));
             } catch(e) {}
           })();
         `}} />

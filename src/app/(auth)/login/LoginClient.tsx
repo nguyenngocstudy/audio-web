@@ -38,11 +38,11 @@ export default function LoginClient() {
             style={{ backgroundColor: "var(--accent)" }}>
             <i className="ti ti-headphones text-white" style={{ fontSize: 26 }} />
           </div>
-          <h1 className="text-2xl font-bold text-white">Dang nhap</h1>
+          <h1 className="text-2xl font-bold text-white">Đăng nhập</h1>
           <p className="text-gray-400 text-sm mt-1">
-            Chua co tai khoan?{" "}
+            Chưa có tài khoản?{" "}
             <Link href="/register" className="font-medium hover:underline" style={{ color: "var(--accent)" }}>
-              Dang ky mien phi
+              Đăng ký miễn phí
             </Link>
           </p>
         </div>
@@ -59,12 +59,12 @@ export default function LoginClient() {
               <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332Z" fill="#FBBC05"/>
               <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58Z" fill="#EA4335"/>
             </svg>
-            Tiep tuc voi Google
+            Tiếp tục với Google
           </button>
 
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 h-px bg-white/10" />
-            <span className="text-xs text-gray-500">hoac</span>
+            <span className="text-xs text-gray-500">hoặc</span>
             <div className="flex-1 h-px bg-white/10" />
           </div>
 
@@ -84,9 +84,9 @@ export default function LoginClient() {
             {/* Password with toggle */}
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="text-sm font-medium text-gray-300">Mat khau</label>
+                <label className="text-sm font-medium text-gray-300">Mật khẩu</label>
                 <Link href="/forgot-password" className="text-xs text-gray-400 hover:text-white transition-colors">
-                  Quen mat khau?
+                  Quên mật khẩu?
                 </Link>
               </div>
               <div className="relative">
@@ -116,8 +116,8 @@ export default function LoginClient() {
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-white text-sm transition-all hover:opacity-90 disabled:opacity-60"
               style={{ backgroundColor: "var(--accent)" }}>
               {loading
-                ? <><i className="ti ti-loader-2 animate-spin" style={{ fontSize: 16 }} />Dang dang nhap...</>
-                : <><i className="ti ti-login" style={{ fontSize: 16 }} />Dang nhap</>}
+                ? <><i className="ti ti-loader-2 animate-spin" style={{ fontSize: 16 }} />Đang đăng nhập...</>
+                : <><i className="ti ti-login" style={{ fontSize: 16 }} />Đăng nhập</>}
             </button>
           </form>
         </div>

@@ -8,6 +8,7 @@ import Image from "next/image";
 
 const GENRES = [
   { v: "ngon_tinh", l: "Ngôn tình" }, { v: "tra_xanh", l: "Trà xanh" },
+   { v: "trong_sinh", l: "Trọng sinh" },
    { v: "trinh_tham", l: "Trinh thám" },
   { v: "co_dai", l: "Cổ đại" },     { v: "hoc_duong", l: "Học đường" },
   { v: "hai_huoc", l: "Hài hước" }, { v: "hanh_dong", l: "Hành động" },

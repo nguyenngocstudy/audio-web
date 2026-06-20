@@ -4,7 +4,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const genreEnum = pgEnum("genre", [
-  "ngon_tinh","tra_xanh","trinh_tham","co_dai","hoc_duong","hai_huoc","hanh_dong",
+  "ngon_tinh","tra_xanh","trinh_tham","trong_sinh","co_dai","hoc_duong","hai_huoc","hanh_dong",
 ]);
 export const txTypeEnum = pgEnum("tx_type", [
   "subscription","coin_topup","chapter_unlock",

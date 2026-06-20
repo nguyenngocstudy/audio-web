@@ -11,7 +11,7 @@ export const fmtDuration = (sec: number) => {
 };
 
 export const GENRE_LABEL: Record<string, string> = {
-  ngon_tinh: "Ngôn tình", tra_xanh: "Trà xanh", trinh_tham: "Trinh thám", co_dai: "Cổ đại",
+  ngon_tinh: "Ngôn tình", tra_xanh: "Trà xanh", trong_sinh: "Trọng sinh",  trinh_tham: "Trinh thám", co_dai: "Cổ đại",
   hoc_duong: "Học đường", hai_huoc: "Hài hước", hanh_dong: "Hành động",
 };
 

@@ -64,11 +64,11 @@ export default function RegisterPage() {
             style={{ backgroundColor: "var(--accent)" }}>
             <i className="ti ti-headphones text-white" style={{ fontSize: 26 }} />
           </div>
-          <h1 className="text-2xl font-bold text-white">Tao tai khoan</h1>
+          <h1 className="text-2xl font-bold text-white">Tạo tài khoản</h1>
           <p className="text-gray-400 text-sm mt-1">
-            Da co tai khoan?{" "}
+            Đã có tài khoản?{" "}
             <Link href="/login" className="font-medium hover:underline" style={{ color: "var(--accent)" }}>
-              Dang nhap
+              Đăng nhập
             </Link>
           </p>
         </div>
@@ -85,19 +85,19 @@ export default function RegisterPage() {
               <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332Z" fill="#FBBC05"/>
               <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58Z" fill="#EA4335"/>
             </svg>
-            Dang ky voi Google
+            Đăng ký với Google
           </button>
 
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 h-px bg-white/10" />
-            <span className="text-xs text-gray-500">hoac</span>
+            <span className="text-xs text-gray-500">hoặc</span>
             <div className="flex-1 h-px bg-white/10" />
           </div>
 
           <form onSubmit={submit} className="space-y-3">
             {/* Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Ten hien thi</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Tên hiển thị</label>
               <div className="relative">
                 <i className="ti ti-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" style={{ fontSize: 16 }} />
                 <input type="text" value={name} onChange={e => setName(e.target.value)}
@@ -169,13 +169,13 @@ export default function RegisterPage() {
 
             {/* Confirm password with toggle */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Xac nhan mat khau</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Xác nhận mật khẩu</label>
               <div className="relative">
                 <i className="ti ti-lock-check absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" style={{ fontSize: 16 }} />
                 <input
                   type={showConfirm ? "text" : "password"}
                   value={confirm} onChange={e => setConfirm(e.target.value)} required
-                  placeholder="Nhap lai mat khau"
+                  placeholder="Nhập lại mật khẩu"
                   className={`w-full pl-9 pr-10 py-2.5 text-sm text-white placeholder-gray-500 rounded-xl border bg-white/5 focus:outline-none focus:ring-2 focus:border-transparent transition-colors ${
                     pwMatch ? "border-rose-500/60" : confirm && !pwMatch ? "border-teal-500/60" : "border-white/10"
                   }`}
@@ -188,7 +188,7 @@ export default function RegisterPage() {
               {pwMatch && (
                 <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
                   <i className="ti ti-alert-circle" style={{ fontSize: 12 }} />
-                  Mat khau khong khop
+                  Mật khẩu không khớp
                 </p>
               )}
             </div>
@@ -204,8 +204,8 @@ export default function RegisterPage() {
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-white text-sm transition-all hover:opacity-90 disabled:opacity-60 mt-1"
               style={{ backgroundColor: "var(--accent)" }}>
               {loading
-                ? <><i className="ti ti-loader-2 animate-spin" style={{ fontSize: 16 }} />Dang tao tai khoan...</>
-                : <><i className="ti ti-user-plus" style={{ fontSize: 16 }} />Tao tai khoan</>}
+                ? <><i className="ti ti-loader-2 animate-spin" style={{ fontSize: 16 }} />Đang tạo tài khoản...</>
+                : <><i className="ti ti-user-plus" style={{ fontSize: 16 }} />Tạo tài khoản</>}
             </button>
           </form>
         </div>

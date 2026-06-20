@@ -12,6 +12,7 @@ import ChapterCommentTabs from "./ChapterCommentTabs";
 const GENRE_COLORS: Record<string, string> = {
   ngon_tinh:    "bg-rose-500/20 text-rose-300 border-rose-500/30",
   tra_xanh:    "bg-rose-500/20 text-rose-300 border-rose-500/30",
+  trong_sinh:   "bg-purple-500/20 text-purple-300 border-purple-500/30",
   trinh_tham:   "bg-purple-500/20 text-purple-300 border-purple-500/30",
   co_dai:      "bg-amber-500/20 text-amber-300 border-amber-500/30",
   hoc_duong: "bg-blue-500/20 text-blue-300 border-blue-500/30",
