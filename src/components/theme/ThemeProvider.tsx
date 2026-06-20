@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-export type ThemeMode = "light" | "dark" | "system";
+export type ThemeMode = "dark" | "light" |  "system";
 
 export const ACCENT_COLORS = [
   { name: "Tím (mặc định)", value: "#7c3aed", tw: "violet"  },
@@ -25,7 +25,7 @@ interface ThemeCtx {
 }
 
 const Ctx = createContext<ThemeCtx>({
-  mode: "light", accentColor: "#7c3aed",
+  mode: "dark", accentColor: "#7c3aed",
   setMode: () => {}, setAccentColor: () => {},
 });
 
@@ -64,12 +64,12 @@ function applyMode(mode: ThemeMode) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mode,        setModeState]  = useState<ThemeMode>("light");
+  const [mode,        setModeState]  = useState<ThemeMode>("dark");
   const [accentColor, setAccentState] = useState("#7c3aed");
 
   // Khởi tạo từ localStorage
   useEffect(() => {
-    const savedMode   = (localStorage.getItem("theme-mode") as ThemeMode) || "light";
+    const savedMode   = (localStorage.getItem("theme-mode") as ThemeMode) || "dark";
     const savedAccent = localStorage.getItem("theme-accent") || "#7c3aed";
     setModeState(savedMode);
     setAccentState(savedAccent);

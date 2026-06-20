@@ -2,8 +2,8 @@
 import { useTheme, ACCENT_COLORS, type ThemeMode } from "./ThemeProvider";
 
 const MODES: { value: ThemeMode; icon: string; label: string }[] = [
-  { value: "light",  icon: "ti-sun",            label: "Sáng"      },
   { value: "dark",   icon: "ti-moon",            label: "Tối"       },
+  { value: "light",  icon: "ti-sun",            label: "Sáng"      },
   { value: "system", icon: "ti-device-laptop",   label: "Hệ thống"  },
 ];
 
