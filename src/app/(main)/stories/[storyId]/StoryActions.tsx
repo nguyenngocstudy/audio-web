@@ -26,14 +26,14 @@ export default function StoryActions({ storyId, firstChapterId, storyTitle }: Pr
         <Link href={`/stories/${storyId}/chapters/${firstChapterId}`}
           className="inline-flex items-center gap-2 px-5 py-2 rounded-xl font-semibold text-sm text-white transition-all hover:opacity-90"
           style={{ backgroundColor: "var(--accent)" }}>
-          <i className="ti ti-player-play-filled" style={{ fontSize: 15 }} />
+          <i className="ti ti-player-play" style={{ fontSize: 15 }} />
           Nghe thử
         </Link>
       ) : (
         <button disabled
           className="inline-flex items-center gap-2 px-5 py-2 rounded-xl font-semibold text-sm text-white opacity-40 cursor-not-allowed"
           style={{ backgroundColor: "var(--accent)" }}>
-          <i className="ti ti-player-play-filled" style={{ fontSize: 15 }} />
+          <i className="ti ti-player-play" style={{ fontSize: 15 }} />
           Nghe thử
         </button>
       )}

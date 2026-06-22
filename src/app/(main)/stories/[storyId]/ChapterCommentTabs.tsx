@@ -271,7 +271,7 @@ export default function ChapterCommentTabs({
                     <Link href={`/stories/${storyId}/chapters/${ch.id}`}
                       className="flex items-center justify-center w-8 h-8 rounded-full text-white transition-all hover:opacity-80"
                       style={{ backgroundColor: "var(--accent)" }}>
-                      <i className="ti ti-player-play-filled" style={{ fontSize: 13 }} />
+                      <i className="ti ti-player-play" style={{ fontSize: 13 }} />
                     </Link>
                   ) : (
                     <Link href="/vip"

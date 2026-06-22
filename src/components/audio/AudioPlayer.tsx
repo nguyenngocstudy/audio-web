@@ -205,7 +205,7 @@ export default function AudioPlayer({
           <button onClick={togglePlay}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-white"
             style={{ backgroundColor: "var(--accent)" }}>
-            <i className="ti ti-player-play-filled" style={{ fontSize: 14 }} />
+            <i className="ti ti-player-play" style={{ fontSize: 14 }} />
             Phát
           </button>
         </div>

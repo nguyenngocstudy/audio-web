@@ -2,9 +2,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import NotificationBell from "./NotificationBell";
 import ThemeToggle from "@/components/theme/ThemeToggle";
+
+interface SearchResult {
+  id: string;
+  title: string;
+  author: string | null;
+  genre: string;
+  coverUrl: string | null;
+}
 
 interface Me { isAdmin: boolean; email: string; name?: string | null; coinBalance: number; }
 
@@ -13,11 +22,44 @@ export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [me, setMe]     = useState<Me | null>(null);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [showResults, setShowResults] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (session?.user?.id) fetch("/api/me").then(r => r.json()).then(setMe);
     else setMe(null);
   }, [session?.user?.id]);
+
+  // Debounced search
+  useEffect(() => {
+    const trimmed = query.trim();
+    if (trimmed.length < 2) { setResults([]); setSearching(false); return; }
+    setSearching(true);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/stories/search?q=${encodeURIComponent(trimmed)}`);
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        setResults(data);
+      } catch { setResults([]); }
+      setSearching(false);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // Close search results on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node))
+        setShowResults(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const navLinks = [
     { href: "/",          label: "Trang chủ", icon: "ti-home"   },
@@ -59,12 +101,42 @@ export default function Navbar() {
         </div>
 
         {/* Search */}
-        <div className="flex-1 max-w-xs hidden sm:block">
+        <div className="flex-1 max-w-xs hidden sm:block relative" ref={searchRef}>
           <div className="relative">
             <i className="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" style={{ fontSize: 14 }} />
             <input placeholder="Tìm truyện..."
+              value={query}
+              onChange={e => { setQuery(e.target.value); setShowResults(true); }}
+              onFocus={() => { if (query.trim().length >= 2) setShowResults(true); }}
+              onKeyDown={e => { if (e.key === "Enter" && results.length > 0) router.push(`/stories/${results[0].id}`); }}
               className="w-full pl-8 pr-3 py-1.5 text-sm bg-white/5 border border-white/10 text-gray-200 placeholder-gray-600 rounded-full focus:outline-none focus:border-white/20 focus:bg-white/8 transition-all" />
+            {searching && (
+              <i className="ti ti-loader absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 animate-spin" style={{ fontSize: 14 }} />
+            )}
           </div>
+
+          {/* Dropdown results */}
+          {showResults && results.length > 0 && (
+            <div className="absolute top-full mt-2 left-0 right-0 rounded-xl border border-white/10 shadow-2xl py-2 z-50 overflow-hidden"
+              style={{ backgroundColor: "rgba(15,15,26,0.98)", backdropFilter: "blur(12px)" }}>
+              {results.map(item => (
+                <button key={item.id} onClick={() => { router.push(`/stories/${item.id}`); setShowResults(false); }}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors text-left">
+                  <div className="w-9 h-9 rounded-md flex-shrink-0 overflow-hidden"
+                    style={{ backgroundColor: "var(--accent-light)" }}>
+                    {item.coverUrl
+                      ? <img src={item.coverUrl} alt="" className="w-full h-full object-cover" />
+                      : <i className="ti ti-book text-white flex items-center justify-center w-full h-full" style={{ fontSize: 14 }} />
+                    }
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium truncate">{item.title}</p>
+                    <p className="text-xs text-gray-500 truncate">{item.author ?? "Không rõ"} · {item.genre}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Right: ThemeToggle + Bell + Avatar */}

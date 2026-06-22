@@ -29,8 +29,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) token.id = user.id;
+    async jwt({ token, user, account }) {
+      if (user) {
+        token.id = user.id;
+        if (account?.provider === "google" && user.email) {
+          const [existing] = await db.select({ id: users.id }).from(users)
+            .where(eq(users.email, user.email)).limit(1);
+          if (existing) token.id = existing.id;
+        }
+      }
       return token;
     },
     async session({ session, token }) {
@@ -38,7 +45,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
     async signIn({ user, account }) {
-      debugger;
       if (account?.provider === "google" && user.email) {
         const existing = await db.select({ id: users.id }).from(users)
           .where(eq(users.email, user.email)).limit(1);

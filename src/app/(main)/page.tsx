@@ -61,7 +61,7 @@ export default async function HomePage({ searchParams }: { searchParams: { genre
             <Link href="/?#stories"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-white text-sm shadow-lg transition-all hover:scale-105 hover:shadow-xl"
               style={{ backgroundColor: "var(--accent)" }}>
-              <i className="ti ti-player-play-filled" style={{ fontSize: 16 }} />
+              <i className="ti ti-player-play" style={{ fontSize: 16 }} />
               Khám phá ngay
             </Link>
             <Link href="/vip"
