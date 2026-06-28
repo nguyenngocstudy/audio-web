@@ -10,9 +10,18 @@ export default function ForgotPasswordPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    // TODO: Tích hợp email service (Resend, SendGrid...)
-    await new Promise(r => setTimeout(r, 1200));
-    setSent(true);
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) throw new Error("Lỗi server");
+      setSent(true);
+    } catch {
+      // Luôn hiện sent để tránh email enumeration
+      setSent(true);
+    }
     setLoading(false);
   }
 
