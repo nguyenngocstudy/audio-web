@@ -117,7 +117,7 @@ export default async function HomePage({
           </div>
           <div className="relative flex items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center mb-1">
                 <i className="ti ti-crown-filled text-amber-400" style={{ fontSize:18 }} />
                 <p className="font-bold text-white text-base">Nâng cấp VIP ngay hôm nay</p>
               </div>
