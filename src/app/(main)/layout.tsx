@@ -1,9 +1,11 @@
 import Navbar from "@/components/layout/Navbar";
+import SocialFloating from "@/components/layout/SocialFloating";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(10 10 15)" }}>
       <Navbar />
+      <SocialFloating />
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-6">
         {children}
       </main>
