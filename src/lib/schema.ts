@@ -1,6 +1,6 @@
 import {
   pgTable, uuid, varchar, text, boolean,
-  integer, timestamp, pgEnum,
+  integer, timestamp, pgEnum, unique,
 } from "drizzle-orm/pg-core";
 
 export const genreEnum = pgEnum("genre", [
@@ -61,7 +61,9 @@ export const listenProgress = pgTable("listen_progress", {
   positionSec: integer("position_sec").notNull().default(0),
   completedAt: timestamp("completed_at"),
   updatedAt:   timestamp("updated_at").notNull().defaultNow(),
-});
+}, (table) => ({
+  unq: unique().on(table.userId, table.chapterId),
+}));
 
 export const chapterUnlocks = pgTable("chapter_unlocks", {
   id:         uuid("id").defaultRandom().primaryKey(),

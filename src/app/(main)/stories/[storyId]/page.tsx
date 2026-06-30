@@ -1,8 +1,8 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 import { db } from "@/lib/db";
-import { stories, chapters, chapterUnlocks, communityPosts, communityComments } from "@/lib/schema";
+import { stories, chapters, chapterUnlocks } from "@/lib/schema";
 import { eq, and, asc, sql } from "drizzle-orm";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import Image from "next/image";
 import { GENRE_LABEL, fmtDuration } from "@/lib/utils";
@@ -22,36 +22,38 @@ const GENRE_COLORS: Record<string, string> = {
 
 export default async function StoryDetailPage({ params }: { params: { storyId: string } }) {
   const session = await auth();
+  if (!session?.user?.id) redirect("/login");
 
-  const [story] = await db.select().from(stories)
-    .where(and(eq(stories.id, params.storyId), eq(stories.isPublished, true))).limit(1);
+  const [story] = await Promise.all([
+    db.select().from(stories)
+      .where(and(eq(stories.id, params.storyId), eq(stories.isPublished, true)))
+      .limit(1).then(r => r[0]),
+  ]);
   if (!story) notFound();
 
-  await db.execute(sql`UPDATE stories SET view_count = view_count + 1 WHERE id = ${story.id}`);
+  db.execute(sql`UPDATE stories SET view_count = view_count + 1 WHERE id = ${story.id}`);
 
-  const chapterList = await db.select().from(chapters)
-    .where(and(eq(chapters.storyId, story.id), eq(chapters.isPublished, true)))
-    .orderBy(asc(chapters.chapterNumber));
+  const [chapterList, unlocked, user, initialCommentCount] = await Promise.all([
+    db.select().from(chapters)
+      .where(and(eq(chapters.storyId, story.id), eq(chapters.isPublished, true)))
+      .orderBy(asc(chapters.chapterNumber)),
+    session?.user?.id
+      ? db.select({ chapterId: chapterUnlocks.chapterId })
+          .from(chapterUnlocks).where(eq(chapterUnlocks.userId, session.user.id))
+          .then(rows => new Set(rows.map(r => r.chapterId)))
+      : Promise.resolve(new Set<string>()),
+    session?.user?.id
+      ? db.query.users.findFirst({ where: (u, { eq }) => eq(u.id, session.user.id!) })
+      : Promise.resolve(null),
+    db.execute(sql`
+      SELECT COUNT(c.id)::int AS cnt
+      FROM community_comments c
+      JOIN community_posts p ON p.id = c.post_id
+      WHERE p.metadata = ${story.id} AND c.is_hidden = FALSE
+    `).then(r => (r.rows[0] as any)?.cnt ?? 0).catch(() => 0),
+  ]);
 
-  const unlocked = session?.user?.id
-    ? new Set((await db.select({ chapterId: chapterUnlocks.chapterId })
-        .from(chapterUnlocks).where(eq(chapterUnlocks.userId, session.user.id)))
-        .map(r => r.chapterId))
-    : new Set<string>();
-
-  const user = session?.user?.id
-    ? await db.query.users.findFirst({ where: (u, { eq }) => eq(u.id, session.user.id) })
-    : null;
   const isVip = user?.vipUntil && new Date(user.vipUntil) > new Date();
-
-  // Get comment count from server for accurate initial display
-  const countResult = await db.execute(sql`
-    SELECT COUNT(c.id)::int AS cnt
-    FROM community_comments c
-    JOIN community_posts p ON p.id = c.post_id
-    WHERE p.metadata = ${story.id} AND c.is_hidden = FALSE
-  `).catch(() => ({ rows: [{ cnt: 0 }] }));
-  const initialCommentCount = (countResult.rows[0] as any)?.cnt ?? 0;
 
   const totalDuration = chapterList.reduce((s, c) => s + (c.durationSec ?? 0), 0);
   const genreColor = GENRE_COLORS[story.genre] ?? "bg-gray-500/20 text-gray-300 border-gray-500/30";

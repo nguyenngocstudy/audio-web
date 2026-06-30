@@ -1,13 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Disable static page cache so admin changes show immediately
-  experimental: {
-    staleTimes: {
-      dynamic: 0,
-      static: 0,
-    },
-  },
   images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 3600,
     remotePatterns: [
       { protocol: "https", hostname: "*.r2.dev" },
       { protocol: "https", hostname: "pub-*.r2.dev" },

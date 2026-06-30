@@ -5,8 +5,7 @@ import StoryCard from "@/components/story/StoryCard";
 import { GENRE_LABEL } from "@/lib/utils";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
+export const revalidate = 60;
 
 const GENRES = Object.entries(GENRE_LABEL);
 
@@ -34,21 +33,16 @@ export default async function HomePage({
     ? and(eq(stories.isPublished, true), eq(stories.genre, genre as any))
     : eq(stories.isPublished, true);
 
-  // Total count for pagination
   const [{ total }] = await db.select({ total: count() }).from(stories).where(where);
-  const totalPages  = Math.ceil(total / PAGE_SIZE);
 
-  // Paginated results
-  const allStories = await db.select().from(stories)
-    .where(where).orderBy(desc(stories.viewCount))
-    .limit(PAGE_SIZE).offset(offset);
+  const [allStories, trending] = await Promise.all([
+    db.select().from(stories).where(where).orderBy(desc(stories.viewCount)).limit(PAGE_SIZE).offset(offset),
+    !genre && page === 1
+      ? db.select().from(stories).where(eq(stories.isPublished, true)).orderBy(desc(stories.viewCount)).limit(6)
+      : Promise.resolve([]),
+  ]);
 
-  // Trending (top 6 all-time, only on first page, no genre filter)
-  const trending = !genre && page === 1
-    ? await db.select().from(stories)
-        .where(eq(stories.isPublished, true))
-        .orderBy(desc(stories.viewCount)).limit(6)
-    : [];
+  const totalPages = Math.ceil(total / PAGE_SIZE);
 
   function pageUrl(p: number) {
     const params = new URLSearchParams();
@@ -164,7 +158,7 @@ export default async function HomePage({
             </div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {trending.map(s => <StoryCard key={s.id} story={s} />)}
+            {trending.map((s, i) => <StoryCard key={s.id} story={s} priority={i === 0} />)}
           </div>
         </section>
       )}

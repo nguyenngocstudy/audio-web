@@ -26,7 +26,7 @@ const GENRE_BG: Record<string, string> = {
   hanh_dong:   "from-red-900 to-red-700",
 };
 
-export default function StoryCard({ story }: { story: Story }) {
+export default function StoryCard({ story, priority }: { story: Story; priority?: boolean }) {
   return (
     <Link href={`/stories/${story.id}`}
       className="group flex flex-col rounded-xl overflow-hidden hover:scale-[1.03] hover:shadow-xl transition-all duration-200 cursor-pointer"
@@ -39,6 +39,7 @@ export default function StoryCard({ story }: { story: Story }) {
             src={story.coverUrl}
             alt={story.title}
             fill
+            loading={priority ? "eager" : "lazy"}
             className="object-cover group-hover:scale-105 transition-transform duration-500"
             sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 200px"
           />
