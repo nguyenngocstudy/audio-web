@@ -1,18 +1,39 @@
 export const dynamic = "force-dynamic";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
-import { desc } from "drizzle-orm";
+import { desc, sql } from "drizzle-orm";
 import Badge from "@/components/ui/Badge";
 import { fmtDate } from "@/lib/utils";
+import Link from "next/link";
 
-export default async function AdminUsersPage() {
-  const data = await db.select().from(users).orderBy(desc(users.createdAt));
+const PAGE_SIZE = 10;
+
+export default async function AdminUsersPage({
+  searchParams,
+}: {
+  searchParams: { page?: string };
+}) {
+  const page = Math.max(1, Number(searchParams.page) || 1);
+  const offset = (page - 1) * PAGE_SIZE;
+
+  const [{ count }] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(users);
+  const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
+
+  const data = await db
+    .select()
+    .from(users)
+    .orderBy(desc(users.createdAt))
+    .limit(PAGE_SIZE)
+    .offset(offset);
+
   const now = new Date();
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-xl font-semibold text-gray-900">Người dùng</h1>
-        <p className="text-sm text-gray-400 mt-0.5">{data.length} tài khoản</p>
+        <p className="text-sm text-gray-400 mt-0.5">{count.toLocaleString()} tài khoản</p>
       </div>
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
@@ -61,6 +82,29 @@ export default async function AdminUsersPage() {
             </tbody>
           </table>
         </div>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
+            <p className="text-sm text-gray-400">Trang {page}/{totalPages}</p>
+            <div className="flex gap-2">
+              {page > 1 && (
+                <Link
+                  href={`/admin/users?page=${page - 1}`}
+                  className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Trước
+                </Link>
+              )}
+              {page < totalPages && (
+                <Link
+                  href={`/admin/users?page=${page + 1}`}
+                  className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Sau
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
