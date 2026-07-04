@@ -33,12 +33,19 @@ export default async function AdminChaptersPage({
           <h1 className="text-xl font-semibold text-gray-900">Quản lý chương</h1>
           <p className="text-sm text-gray-400 mt-0.5">{selectedStory?.title ?? "Chọn truyện"}</p>
         </div>
-        <Link
-          href={`/admin/chapters/new?storyId=${selectedId ?? ""}`}
-          className="inline-flex items-center gap-2 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-          style={{ backgroundColor: "var(--accent)" }}>
-          <i className="ti ti-plus" style={{ fontSize: 15 }} />Thêm chương
-        </Link>
+     <div className="flex gap-2">
+      <Link
+        href={`/admin/chapters/bulk?storyId=${selectedId ?? ""}`}
+        className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+        <i className="ti ti-stack" style={{ fontSize: 15 }} />Thêm hàng loạt
+      </Link>
+      <Link
+        href={`/admin/chapters/new?storyId=${selectedId ?? ""}`}
+        className="inline-flex items-center gap-2 text-white text-sm font-medium px-4 py-2 rounded-lg"
+        style={{ backgroundColor: "var(--accent)" }}>
+        <i className="ti ti-plus" style={{ fontSize: 15 }} />Thêm chương
+      </Link>
+    </div>
       </div>
 
       {/* Searchable story selector */}
