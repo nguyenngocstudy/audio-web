@@ -101,7 +101,7 @@ export default function Navbar() {
         </div>
 
         {/* Search */}
-        <div className="flex-1 max-w-xs hidden sm:block relative" ref={searchRef}>
+        <div className="flex-1 max-w-xs block relative" ref={searchRef}>
           <div className="relative">
             <i className="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" style={{ fontSize: 14 }} />
             <input placeholder="Tìm truyện..."

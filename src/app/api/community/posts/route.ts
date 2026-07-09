@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { communityPosts, communityLikes, users } from "@/lib/schema";
+import { communityPosts, communityLikes, users, notifications } from "@/lib/schema";
 import { desc, eq, and, sql } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
@@ -46,6 +46,27 @@ export async function POST(req: NextRequest) {
     type: type ?? "discussion",
     content: content.trim(),
   }).returning();
+
+  // Notify all admins about the new post (skip if the poster is an admin)
+  const posterIsAdmin = await db.select({ isAdmin: users.isAdmin }).from(users)
+    .where(eq(users.id, session.user.id)).limit(1).then(r => r[0]?.isAdmin);
+  if (!posterIsAdmin) {
+    const admins = await db.select({ id: users.id }).from(users)
+      .where(eq(users.isAdmin, true));
+    if (admins.length > 0) {
+      const posterName = (await db.select({ name: users.name }).from(users)
+        .where(eq(users.id, session.user.id)).limit(1))[0]?.name ?? "Ai đó";
+      await db.insert(notifications).values(
+        admins.map(a => ({
+          userId: a.id,
+          type: "new_post" as const,
+          title: `${posterName} đã đăng bài viết mới`,
+          body: content.trim().slice(0, 120),
+          link: `/community#${post.id}`,
+        }))
+      );
+    }
+  }
 
   return NextResponse.json(post, { status: 201 });
 }

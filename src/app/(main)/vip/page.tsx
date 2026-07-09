@@ -79,9 +79,9 @@ export default function VipPage() {
       });
       const data = await res.json();
       if (data.checkoutUrl) window.location.href = data.checkoutUrl;
-      else alert("Loi tao thanh toan, thu lai sau.");
+      else alert("Lỗi tạo thanh toán, thử lại sau.");
     } catch {
-      alert("Loi ket noi, thu lai sau.");
+      alert("Lỗi kết nối, thử lại sau.");
     }
     setLoading(false);
   }
@@ -95,7 +95,7 @@ export default function VipPage() {
 
           <div className="flex items-center justify-center gap-2 mb-6">
             <i className="ti ti-crown-filled text-amber-400" style={{ fontSize: 22 }} />
-            <h1 className="text-xl font-bold text-white">Chon goi VIP</h1>
+            <h1 className="text-xl font-bold text-white">Chọn gói VIP</h1>
           </div>
 
           <div className="grid grid-cols-2 gap-3 mb-5">
@@ -117,7 +117,7 @@ export default function VipPage() {
                 </p>
                 {p.pricePerMonth !== p.price && (
                   <p className="text-gray-500 text-xs mt-0.5">
-                    ~{Math.round(p.pricePerMonth).toLocaleString("vi-VN")}d/thang
+                    ~{Math.round(p.pricePerMonth).toLocaleString("vi-VN")}₫/tháng
                   </p>
                 )}
                 {p.discount && (
@@ -136,9 +136,9 @@ export default function VipPage() {
 
           <div className="rounded-xl p-4 mb-5 text-center"
             style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.06)" }}>
-            <p className="text-gray-400 text-sm">Tong thanh toan:</p>
+            <p className="text-gray-400 text-sm">Tổng thanh toán:</p>
             <p className="text-amber-400 text-2xl font-bold mt-0.5">{fmtVnd(plan.price)}</p>
-            <p className="text-gray-500 text-xs mt-0.5">({plan.days} ngay su dung)</p>
+            <p className="text-gray-500 text-xs mt-0.5">({plan.days} ngày sử dụng)</p>
           </div>
 
           <ul className="space-y-2.5 mb-6">
@@ -156,26 +156,26 @@ export default function VipPage() {
             className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-base text-white transition-all hover:opacity-90 disabled:opacity-60"
             style={{ background: "linear-gradient(90deg, #f59e0b, #d97706)" }}>
             {loading
-              ? <><i className="ti ti-loader-2 animate-spin" style={{ fontSize: 18 }} />Dang xu ly...</>
-              : <><i className="ti ti-credit-card" style={{ fontSize: 18 }} />Thanh toan {fmtVnd(plan.price)}</>}
+              ? <><i className="ti ti-loader-2 animate-spin" style={{ fontSize: 18 }} />Đang xử lý...</>
+              : <><i className="ti ti-credit-card" style={{ fontSize: 18 }} />Thanh toán {fmtVnd(plan.price)}</>}
           </button>
 
           <p className="text-center text-xs text-gray-500 mt-3">
-            VIP duoc kich hoat tu dong sau khi thanh toan.
+            VIP được kích hoạt tự động sau khi thanh toán.
           </p>
           <p className="text-center text-xs text-gray-600 mt-1.5">
-            Can ho tro? Lien he Admin.
+            Cần hỗ trợ? Liên hệ Admin.
           </p>
         </div>
 
         <div className="text-center mb-6">
-          <h2 className="text-xl font-bold text-white mb-5">Tai sao nen dang ky VIP?</h2>
+          <h2 className="text-xl font-bold text-white mb-5">Tại sao nên đăng ký VIP?</h2>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { icon: "ti-books",        title: "Kho truyen khong lo",  desc: "Hang nghin truyen VIP chat luong cao" },
-              { icon: "ti-ban",          title: "Khong quang cao",      desc: "Trai nghiem nghe hoan toan thuan tuy" },
-              { icon: "ti-device-mobile",title: "Moi thiet bi",         desc: "Nghe tren web, Android, iOS" },
-              { icon: "ti-refresh",      title: "Cap nhat lien tuc",    desc: "Tap moi moi ngay, truy cap som" },
+              { icon: "ti-books",        title: "Kho truyện khổng lồ",  desc: "Hàng nghìn truyện VIP chất lượng cao" },
+              { icon: "ti-ban",          title: "Không quảng cáo",      desc: "Trải nghiệm nghe hoàn toàn thuần túy" },
+              { icon: "ti-device-mobile",title: "Mọi thiết bị",         desc: "Nghe trên web, Android, iOS" },
+              { icon: "ti-refresh",      title: "Cập nhật liên tục",    desc: "Tập mới mỗi ngày, truy cập sớm" },
             ].map(item => (
               <div key={item.title} className="rounded-xl p-4 text-left border border-white/5"
                 style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>
@@ -194,9 +194,9 @@ export default function VipPage() {
           style={{ backgroundColor: "rgba(255,255,255,0.02)" }}>
           <i className="ti ti-shield-check text-teal-400 flex-shrink-0" style={{ fontSize: 24 }} />
           <div>
-            <p className="text-sm font-medium text-white">Thanh toan an toan qua PayOS</p>
+            <p className="text-sm font-medium text-white">Thanh toán an toàn qua PayOS</p>
             <p className="text-xs text-gray-500 mt-0.5">
-              Ho tro tat ca app ngan hang Viet Nam. Kich hoat tu dong sau khi thanh toan thanh cong.
+              Hỗ trợ tất cả app ngân hàng Việt Nam. Kích hoạt tự động sau khi thanh toán thành công.
             </p>
           </div>
         </div>

@@ -6,11 +6,15 @@ interface Props {
   storyId: string;
   firstChapterId?: string;
   storyTitle: string;
+  isVip: boolean;
+  firstChapterIsFree: boolean;
 }
 
-export default function StoryActions({ storyId, firstChapterId, storyTitle }: Props) {
+export default function StoryActions({ storyId, firstChapterId, storyTitle, isVip, firstChapterIsFree }: Props) {
   const [copied, setCopied]   = useState(false);
   const [showShare, setShowShare] = useState(false);
+
+  const canPlay = firstChapterId && (firstChapterIsFree || isVip);
 
   function copyLink() {
     const url = `${window.location.origin}/stories/${storyId}`;
@@ -23,11 +27,11 @@ export default function StoryActions({ storyId, firstChapterId, storyTitle }: Pr
   return (
     <div className="flex items-center gap-2 flex-wrap">
       {firstChapterId ? (
-        <Link href={`/stories/${storyId}/chapters/${firstChapterId}`}
+        <Link href={canPlay ? `/stories/${storyId}/chapters/${firstChapterId}` : "/vip"}
           className="inline-flex items-center gap-2 px-5 py-2 rounded-xl font-semibold text-sm text-white transition-all hover:opacity-90"
           style={{ backgroundColor: "var(--accent)" }}>
-          <i className="ti ti-player-play" style={{ fontSize: 15 }} />
-          Nghe thử
+          <i className={`ti ${canPlay ? "ti-player-play" : "ti-lock"}`} style={{ fontSize: 15 }} />
+          {canPlay ? "Nghe thử" : "Mở VIP"}
         </Link>
       ) : (
         <button disabled

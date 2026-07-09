@@ -87,7 +87,7 @@ export default async function StoryDetailPage({ params }: { params: { storyId: s
             <span className="flex items-center gap-1.5"><i className="ti ti-list" style={{ fontSize: 14 }} />{story.totalChapters} tập</span>
             {totalDuration > 0 && <span className="flex items-center gap-1.5"><i className="ti ti-clock" style={{ fontSize: 14 }} />{Math.floor(totalDuration/3600)}h{Math.floor((totalDuration%3600)/60)}p</span>}
           </div>
-          <StoryActions storyId={story.id} firstChapterId={chapterList[0]?.id} storyTitle={story.title} />
+          <StoryActions storyId={story.id} firstChapterId={chapterList[0]?.id} storyTitle={story.title} isVip={!!isVip} firstChapterIsFree={chapterList[0]?.isFree ?? false} />
         </div>
       </div>
 

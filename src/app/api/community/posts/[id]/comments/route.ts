@@ -44,5 +44,24 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     });
   }
 
+  // Notify all admins about the new comment (skip if commenter is admin)
+  const commenterIsAdmin = await db.select({ isAdmin: users.isAdmin }).from(users)
+    .where(eq(users.id, session.user.id)).limit(1).then(r => r[0]?.isAdmin);
+  if (!commenterIsAdmin) {
+    const admins = await db.select({ id: users.id }).from(users)
+      .where(eq(users.isAdmin, true));
+    if (admins.length > 0) {
+      await db.insert(notifications).values(
+        admins.map(a => ({
+          userId: a.id,
+          type: "new_comment" as const,
+          title: `${commenter?.name ?? "Ai đó"} đã bình luận trong cộng đồng`,
+          body: content.trim().slice(0, 120),
+          link: `/community#${params.id}`,
+        }))
+      );
+    }
+  }
+
   return NextResponse.json(comment, { status: 201 });
 }

@@ -97,7 +97,7 @@ export const postTypeEnum = pgEnum("post_type", [
 ]);
 
 export const notificationTypeEnum = pgEnum("notification_type", [
-  "reply","like","admin_reply","system",
+  "reply","like","admin_reply","system","new_post","new_comment",
 ]);
 
 export const communityPosts = pgTable("community_posts", {

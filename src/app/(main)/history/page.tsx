@@ -16,6 +16,9 @@ export default async function HistoryPage({
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
+  const user = await db.query.users.findFirst({ where: (u, { eq }) => eq(u.id, session.user.id) });
+  const isVip = user?.vipUntil && new Date(user.vipUntil) > new Date();
+
   const q = searchParams.q?.trim() || "";
   const page = Math.max(1, Number(searchParams.page) || 1);
   const offset = (page - 1) * PAGE_SIZE;
@@ -52,6 +55,7 @@ export default async function HistoryPage({
       chapterTitle:  chapters.title,
       chapterNumber: chapters.chapterNumber,
       durationSec:   chapters.durationSec,
+      isFree:        chapters.isFree,
       storyId:       stories.id,
       storyTitle:    stories.title,
     })
@@ -97,8 +101,9 @@ export default async function HistoryPage({
             {data.map(row => {
               const pct = row.durationSec && row.positionSec
                 ? Math.round((row.positionSec / row.durationSec) * 100) : 0;
+              const canPlay = row.isFree || isVip;
               return (
-                <Link key={row.progressId} href={`/stories/${row.storyId}/chapters/${row.chapterId}`}
+                <Link key={row.progressId} href={canPlay ? `/stories/${row.storyId}/chapters/${row.chapterId}` : "/vip"}
                   className="flex items-center gap-4 bg-white rounded-xl border border-gray-100 p-4 hover:shadow-sm transition-all">
                   <div className="w-12 h-12 rounded-lg bg-brand-100 flex items-center justify-center flex-shrink-0">
                     <i className="ti ti-headphones text-brand-500" style={{ fontSize: 20 }} />

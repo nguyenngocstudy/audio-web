@@ -16,6 +16,8 @@ const TYPE_ICON: Record<string, string> = {
   like:        "ti-heart",
   admin_reply: "ti-shield-check",
   system:      "ti-bell",
+  new_post:    "ti-article",
+  new_comment: "ti-bubble",
 };
 
 const TYPE_COLOR: Record<string, string> = {
@@ -23,6 +25,8 @@ const TYPE_COLOR: Record<string, string> = {
   like:        "bg-rose-500/20 text-rose-400",
   admin_reply: "bg-amber-500/20 text-amber-400",
   system:      "bg-gray-700 text-gray-400",
+  new_post:    "bg-emerald-500/20 text-emerald-400",
+  new_comment: "bg-violet-500/20 text-violet-400",
 };
 
 export default function NotificationBell() {

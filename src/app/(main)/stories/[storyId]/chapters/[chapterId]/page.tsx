@@ -31,7 +31,7 @@ export default async function ChapterPage({ params }: {
         .limit(1)).length
     : false;
 
-  if (!chapter.isFree && !isVip && !unlocked) redirect(`/stories/${story.id}`);
+  if (!chapter.isFree && !isVip && !unlocked) redirect("/vip");
   if (!chapter.audioUrl) notFound();
 
   const progress = session?.user?.id

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { communityPosts, communityComments, users } from "@/lib/schema";
+import { communityPosts, communityComments, users, notifications } from "@/lib/schema";
 import { eq, sql } from "drizzle-orm";
 
 async function getOrCreateStoryPost(storyId: string): Promise<string> {
@@ -98,6 +98,23 @@ export async function POST(
       .from(users)
       .where(eq(users.id, session.user.id))
       .limit(1);
+
+    // Notify all admins about the new story comment (skip if commenter is admin)
+    if (!u?.isAdmin) {
+      const admins = await db.select({ id: users.id }).from(users)
+        .where(eq(users.isAdmin, true));
+      if (admins.length > 0) {
+        await db.insert(notifications).values(
+          admins.map(a => ({
+            userId: a.id,
+            type: "new_comment" as const,
+            title: `${u?.name ?? "Ai đó"} đã bình luận về truyện`,
+            body: content.trim().slice(0, 120),
+            link: `/community#${postId}`,
+          }))
+        );
+      }
+    }
 
     return NextResponse.json({
       id:             c.id,
