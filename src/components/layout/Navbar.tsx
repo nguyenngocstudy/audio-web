@@ -117,8 +117,8 @@ export default function Navbar() {
 
           {/* Dropdown results */}
           {showResults && results.length > 0 && (
-            <div className="absolute top-full mt-2 left-0 right-0 rounded-xl border border-white/10 shadow-2xl py-2 z-50 overflow-hidden"
-              style={{ backgroundColor: "rgba(15,15,26,0.98)", backdropFilter: "blur(12px)" }}>
+            <div className="absolute top-full mt-2 left-0 right-0 rounded-xl border border-white/10 shadow-2xl py-2 z-50 overflow-y-auto"
+              style={{ backgroundColor: "rgba(15,15,26,0.98)", backdropFilter: "blur(12px)", maxHeight: "500px" }}>
               {results.map(item => (
                 <button key={item.id} onClick={() => { router.push(`/stories/${item.id}`); setShowResults(false); }}
                   className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors text-left">
@@ -130,7 +130,7 @@ export default function Navbar() {
                     }
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{item.title}</p>
+                    <p className="font-medium">{item.title}</p>
                     <p className="text-xs text-gray-500 truncate">{item.author ?? "Không rõ"} · {item.genre}</p>
                   </div>
                 </button>
