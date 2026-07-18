@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 3600,
+    unoptimized: true,  // ← Bỏ qua Vercel optimizer, dùng ảnh gốc từ R2
     remotePatterns: [
       { protocol: "https", hostname: "*.r2.dev" },
       { protocol: "https", hostname: "pub-*.r2.dev" },
