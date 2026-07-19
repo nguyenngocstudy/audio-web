@@ -23,7 +23,7 @@ export default function StoryForm({ story }: { story: Story | null }) {
     narrator:    story?.narrator    ?? "",
     description: story?.description ?? "",
     genre:       story?.genre       ?? "ngon_tinh",
-    isPublished: story?.isPublished ?? false,
+    isPublished: story?.isPublished ?? true,
     coverUrl:    story?.coverUrl    ?? "",
   });
   const [saving, setSaving]         = useState(false);

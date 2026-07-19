@@ -25,7 +25,7 @@ function newRow(num: number): ChapterRow {
     title: `Chương ${num}`,
     audioUrl: "",
     durationSec: 0,
-    isFree: false,
+    isFree: num == 1 ? true : false,
     coinCost: 0,
     isPublished: true,
     uploading: false,
