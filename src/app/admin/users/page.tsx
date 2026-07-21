@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
-import { desc, sql } from "drizzle-orm";
+import { desc, sql, ilike, or } from "drizzle-orm";
 import Badge from "@/components/ui/Badge";
 import { fmtDate } from "@/lib/utils";
 import Link from "next/link";
@@ -11,19 +11,26 @@ const PAGE_SIZE = 10;
 export default async function AdminUsersPage({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: { page?: string; q?: string };
 }) {
   const page = Math.max(1, Number(searchParams.page) || 1);
+  const q = searchParams.q?.trim() ?? "";
   const offset = (page - 1) * PAGE_SIZE;
+
+  const where = q
+    ? or(ilike(users.name, `%${q}%`), ilike(users.email, `%${q}%`))
+    : undefined;
 
   const [{ count }] = await db
     .select({ count: sql<number>`count(*)` })
-    .from(users);
+    .from(users)
+    .where(where);
   const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
 
   const data = await db
     .select()
     .from(users)
+    .where(where)
     .orderBy(desc(users.createdAt))
     .limit(PAGE_SIZE)
     .offset(offset);
@@ -35,6 +42,18 @@ export default async function AdminUsersPage({
         <h1 className="text-xl font-semibold text-gray-900">Người dùng</h1>
         <p className="text-sm text-gray-400 mt-0.5">{count.toLocaleString()} tài khoản</p>
       </div>
+      <form className="mb-4">
+        <div className="relative">
+          <i className="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" style={{ fontSize: 16 }} />
+          <input
+            type="text"
+            name="q"
+            defaultValue={q}
+            placeholder="Tìm theo tên hoặc email..."
+            className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+          />
+        </div>
+      </form>
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -88,7 +107,7 @@ export default async function AdminUsersPage({
             <div className="flex gap-2">
               {page > 1 && (
                 <Link
-                  href={`/admin/users?page=${page - 1}`}
+                  href={`/admin/users?page=${page - 1}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
                   className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Trước
@@ -96,7 +115,7 @@ export default async function AdminUsersPage({
               )}
               {page < totalPages && (
                 <Link
-                  href={`/admin/users?page=${page + 1}`}
+                  href={`/admin/users?page=${page + 1}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
                   className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Sau

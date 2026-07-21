@@ -8,13 +8,24 @@ const STATUS: Record<string, "success" | "warning" | "danger" | "neutral"> = {
   paid: "success", pending: "warning", failed: "danger", cancelled: "neutral",
 };
 
-export default async function AdminTransactionsPage() {
+export default async function AdminTransactionsPage({
+  searchParams,
+}: {
+  searchParams: { q?: string };
+}) {
+  const q = searchParams.q?.trim() ?? "";
+
+  const whereClause = q
+    ? sql`WHERE (u.name ILIKE ${`%${q}%`} OR u.email ILIKE ${`%${q}%`} OR t.payos_order_code ILIKE ${`%${q}%`})`
+    : sql``;
+
   const rows = (await db.execute(sql`
     SELECT t.id, t.payos_order_code, t.type, t.status,
            t.amount_vnd, t.coin_amount, t.created_at, t.paid_at,
            u.email, u.name
     FROM transactions t
     JOIN users u ON u.id = t.user_id
+    ${whereClause}
     ORDER BY t.created_at DESC LIMIT 200
   `)).rows as any[];
 
@@ -25,8 +36,21 @@ export default async function AdminTransactionsPage() {
     <div>
       <div className="mb-6">
         <h1 className="text-xl font-semibold text-gray-900">Giao dịch</h1>
-        <p className="text-sm text-gray-400 mt-0.5">200 giao dịch gần nhất</p>
+        <p className="text-sm text-gray-400 mt-0.5">{rows.length} giao dịch{q ? ` tìm thấy cho "${q}"` : " gần nhất"}</p>
       </div>
+
+      <form className="mb-4">
+        <div className="relative">
+          <i className="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" style={{ fontSize: 16 }} />
+          <input
+            type="text"
+            name="q"
+            defaultValue={q}
+            placeholder="Tìm theo tên, email hoặc mã đơn..."
+            className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+          />
+        </div>
+      </form>
 
       {/* Summary bar */}
       <div className="grid grid-cols-3 gap-4 mb-6">

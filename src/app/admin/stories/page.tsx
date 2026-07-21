@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 import { db } from "@/lib/db";
 import { stories } from "@/lib/schema";
-import { desc, sql } from "drizzle-orm";
+import { desc, sql, ilike, or } from "drizzle-orm";
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
 import { GENRE_LABEL, fmtDate } from "@/lib/utils";
@@ -11,19 +11,26 @@ const PAGE_SIZE = 20;
 export default async function AdminStoriesPage({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: { page?: string; q?: string };
 }) {
   const page = Math.max(1, Number(searchParams.page) || 1);
+  const q = searchParams.q?.trim() ?? "";
   const offset = (page - 1) * PAGE_SIZE;
+
+  const where = q
+    ? or(ilike(stories.title, `%${q}%`), ilike(stories.author, `%${q}%`))
+    : undefined;
 
   const [{ count }] = await db
     .select({ count: sql<number>`count(*)` })
-    .from(stories);
+    .from(stories)
+    .where(where);
   const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
 
   const data = await db
     .select()
     .from(stories)
+    .where(where)
     .orderBy(desc(stories.createdAt))
     .limit(PAGE_SIZE)
     .offset(offset);
@@ -38,6 +45,18 @@ export default async function AdminStoriesPage({
           <i className="ti ti-plus" style={{ fontSize: 15 }} />Thêm truyện
         </Link>
       </div>
+      <form className="mb-4">
+        <div className="relative">
+          <i className="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" style={{ fontSize: 16 }} />
+          <input
+            type="text"
+            name="q"
+            defaultValue={q}
+            placeholder="Tìm theo tên truyện hoặc tác giả..."
+            className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+          />
+        </div>
+      </form>
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <table className="w-full text-sm">
           <thead><tr className="bg-gray-50 border-b border-gray-100">
@@ -71,7 +90,7 @@ export default async function AdminStoriesPage({
             <div className="flex gap-2">
               {page > 1 && (
                 <Link
-                  href={`/admin/stories?page=${page - 1}`}
+                  href={`/admin/stories?page=${page - 1}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
                   className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Trước
@@ -79,7 +98,7 @@ export default async function AdminStoriesPage({
               )}
               {page < totalPages && (
                 <Link
-                  href={`/admin/stories?page=${page + 1}`}
+                  href={`/admin/stories?page=${page + 1}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
                   className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Sau
