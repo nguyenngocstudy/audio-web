@@ -55,7 +55,7 @@ export default async function HomePage({
     <div className="min-h-screen">
       {/* Hero - chỉ trang 1, không filter */}
       {!genre && page === 1 && (
-        <div className="relative overflow-hidden rounded-2xl mb-8"
+        <div className="relative overflow-hidden rounded-2xl mb-8 hidden md:block"
           style={{ background: "linear-gradient(135deg,#0f0f1a 0%,#1a0a2e 40%,#2d1b4e 70%,#1a0a2e 100%)" }}>
           <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-20 blur-3xl"
             style={{ backgroundColor:"var(--accent)", transform:"translate(30%,-30%)" }} />
@@ -104,7 +104,7 @@ export default async function HomePage({
 
       {/* VIP banner - trang 1, không filter */}
       {!genre && page === 1 && (
-        <div className="relative overflow-hidden rounded-2xl mb-8 p-5"
+        <div className="relative overflow-hidden rounded-2xl mb-8 p-5 hidden md:block"
           style={{ background:"linear-gradient(135deg,#78350f,#92400e,#b45309)" }}>
           <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-10">
             <i className="ti ti-crown-filled" style={{ fontSize:80, color:"#fbbf24" }} />
