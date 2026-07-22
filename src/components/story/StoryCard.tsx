@@ -6,6 +6,7 @@ import type { Story } from "@/lib/schema";
 
 const GENRE_COLORS: Record<string, string> = {
   ngon_tinh: "bg-rose-500/80",
+  truyen_dai: "bg-teal-500/80",
   tra_xanh: "bg-green-500/80",
   trinh_tham: "bg-purple-500/80",
   trong_sinh: "bg-purple-500/80",
@@ -17,6 +18,7 @@ const GENRE_COLORS: Record<string, string> = {
 
 const GENRE_BG: Record<string, string> = {
   ngon_tinh:    "from-rose-900 to-rose-700",
+  truyen_dai:  "from-teal-900 to-teal-700",
   tra_xanh:     "from-green-900 to-green-700",
   trinh_tham:   "from-purple-900 to-purple-700",
   trong_sinh:   "from-purple-900 to-purple-700",

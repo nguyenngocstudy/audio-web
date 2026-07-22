@@ -11,6 +11,7 @@ const GENRES = Object.entries(GENRE_LABEL);
 
 const GENRE_ICONS: Record<string, string> = {
   ngon_tinh: "ti-heart",
+  truyen_dai: "ti-book",
   tra_xanh: "ti-heart",
   trinh_tham: "ti-sparkles",
   co_dai: "ti-building-castle",
@@ -67,7 +68,7 @@ export default async function HomePage({
             peakaudio<br />
             </h1>
             <p className="text-gray-400 text-sm md:text-base mb-8 max-w-lg">
-            Truyện ngôn tình,trà xanh, cổ đại, trọng sinh... Nghe mọi lúc mọi nơi trên mọi thiết bị.
+            Truyện ngôn tình, trà xanh, cổ đại, trọng sinh, truyện dài... Nghe mọi lúc mọi nơi trên mọi thiết bị.
             </p>
             <div className="flex flex-wrap gap-3">
               <a href="/#stories"
