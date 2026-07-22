@@ -38,11 +38,11 @@ export default async function AdminUsersPage({
   const now = new Date();
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold text-gray-900">Người dùng</h1>
-        <p className="text-sm text-gray-400 mt-0.5">{count.toLocaleString()} tài khoản</p>
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-lg sm:text-xl font-semibold text-gray-900">Người dùng</h1>
+        <p className="text-xs sm:text-sm text-gray-400 mt-0.5">{count.toLocaleString()} tài khoản</p>
       </div>
-      <form className="mb-4">
+      <form className="mb-3 sm:mb-4">
         <div className="relative">
           <i className="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" style={{ fontSize: 16 }} />
           <input
@@ -50,16 +50,16 @@ export default async function AdminUsersPage({
             name="q"
             defaultValue={q}
             placeholder="Tìm theo tên hoặc email..."
-            className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+            className="w-full pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
           />
         </div>
       </form>
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-xs sm:text-sm">
             <thead><tr className="bg-gray-50 border-b border-gray-100">
               {["Người dùng", "Coin", "VIP đến", "Loại", "Ngày tham gia"].map(h => (
-                <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap">{h}</th>
+                <th key={h} className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 whitespace-nowrap">{h}</th>
               ))}
             </tr></thead>
             <tbody>
@@ -67,48 +67,48 @@ export default async function AdminUsersPage({
                 const vipActive = u.vipUntil && new Date(u.vipUntil) > now;
                 return (
                   <tr key={u.id} className="border-b border-gray-50 hover:bg-gray-50 last:border-0">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-full bg-brand-100 flex items-center justify-center text-xs font-semibold text-brand-700 flex-shrink-0">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3">
+                      <div className="flex items-center gap-2 sm:gap-2.5">
+                        <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-brand-100 flex items-center justify-center text-[10px] sm:text-xs font-semibold text-brand-700 flex-shrink-0">
                           {u.name?.[0]?.toUpperCase() ?? "?"}
                         </div>
-                        <div>
-                          <p className="font-medium text-gray-800">{u.name ?? "—"}</p>
-                          <p className="text-xs text-gray-400">{u.email}</p>
+                        <div className="min-w-0">
+                          <p className="font-medium text-gray-800 truncate max-w-[100px] sm:max-w-none">{u.name ?? "—"}</p>
+                          <p className="text-[10px] sm:text-xs text-gray-400 truncate max-w-[100px] sm:max-w-none">{u.email}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-gray-700">{u.coinBalance.toLocaleString()}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-gray-700 whitespace-nowrap">{u.coinBalance.toLocaleString()}</td>
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       {vipActive
-                        ? <span className="text-amber-600 font-medium text-xs">{fmtDate(u.vipUntil)}</span>
-                        : <span className="text-gray-400 text-xs">—</span>}
+                        ? <span className="text-amber-600 font-medium text-[10px] sm:text-xs">{fmtDate(u.vipUntil)}</span>
+                        : <span className="text-gray-400 text-[10px] sm:text-xs">—</span>}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                       {u.isAdmin
                         ? <Badge variant="danger">Admin</Badge>
                         : vipActive
                           ? <Badge variant="vip">VIP</Badge>
                           : <Badge variant="neutral">Free</Badge>}
                     </td>
-                    <td className="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">{fmtDate(u.createdAt)}</td>
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-gray-400 text-[10px] sm:text-xs whitespace-nowrap">{fmtDate(u.createdAt)}</td>
                   </tr>
                 );
               })}
               {data.length === 0 && (
-                <tr><td colSpan={5} className="py-12 text-center text-gray-400">Chưa có người dùng</td></tr>
+                <tr><td colSpan={5} className="py-8 sm:py-12 text-center text-gray-400 text-sm">Chưa có người dùng</td></tr>
               )}
             </tbody>
           </table>
         </div>
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-            <p className="text-sm text-gray-400">Trang {page}/{totalPages}</p>
-            <div className="flex gap-2">
+          <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 border-t border-gray-100">
+            <p className="text-xs sm:text-sm text-gray-400">Trang {page}/{totalPages}</p>
+            <div className="flex gap-1.5 sm:gap-2">
               {page > 1 && (
                 <Link
                   href={`/admin/users?page=${page - 1}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
-                  className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Trước
                 </Link>
@@ -116,7 +116,7 @@ export default async function AdminUsersPage({
               {page < totalPages && (
                 <Link
                   href={`/admin/users?page=${page + 1}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
-                  className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Sau
                 </Link>

@@ -7,6 +7,7 @@ const NAV = [
   { href: "/admin",               icon: "ti-layout-dashboard", label: "Tổng quan"     },
   { href: "/admin/stories",       icon: "ti-book",             label: "Truyện"         },
   { href: "/admin/chapters",      icon: "ti-file-text",        label: "Chương"         },
+  { href: "/admin/comments",      icon: "ti-message-2",        label: "Bình luận"      },
   { href: "/admin/users",         icon: "ti-users",            label: "Người dùng"     },
   { href: "/admin/transactions",  icon: "ti-credit-card",      label: "Giao dịch"      },
   { href: "/admin/settings",      icon: "ti-settings",         label: "Cài đặt"        },
@@ -38,7 +39,11 @@ export default function AdminSidebar() {
           );
         })}
       </nav>
-      <div className="px-3 py-3 border-t border-gray-100">
+      <div className="px-3 py-3 border-t border-gray-100 space-y-0.5">
+        <a href="/"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 w-full transition-colors">
+          <i className="ti ti-arrow-left" style={{ fontSize: 17 }} />Về trang chủ
+        </a>
         <button onClick={() => signOut({ callbackUrl: "/login" })}
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-500 hover:bg-rose-50 hover:text-rose-600 w-full transition-colors">
           <i className="ti ti-logout" style={{ fontSize: 17 }} />Đăng xuất
