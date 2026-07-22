@@ -61,39 +61,39 @@ export default async function StoryDetailPage({ params }: { params: { storyId: s
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="flex gap-5 mb-6">
-        <div className="relative w-32 h-44 flex-shrink-0 rounded-xl overflow-hidden">
+      <div className="flex gap-3 sm:gap-5 mb-4 sm:mb-6">
+        <div className="relative w-24 h-32 sm:w-32 sm:h-44 flex-shrink-0 rounded-lg sm:rounded-xl overflow-hidden">
           {story.coverUrl ? (
             <Image src={story.coverUrl} alt={story.title} fill className="object-cover" />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-700">
-              <i className="ti ti-book-2 text-white/20" style={{ fontSize: 48 }} />
+              <i className="ti ti-book-2 text-white/20" style={{ fontSize: 36 }} />
             </div>
           )}
         </div>
-        <div className="flex-1 min-w-0 py-1">
-          <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${genreColor}`}>
+        <div className="flex-1 min-w-0 py-0.5 sm:py-1">
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2 flex-wrap">
+            <span className={`inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-medium border ${genreColor}`}>
               {GENRE_LABEL[story.genre] ?? story.genre}
             </span>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-500/20 text-teal-300 border border-teal-500/30">
-              <i className="ti ti-check" style={{ fontSize: 11 }} />Hoàn thành
+            <span className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-medium bg-teal-500/20 text-teal-300 border border-teal-500/30">
+              <i className="ti ti-check" style={{ fontSize: 10 }} />Hoàn thành
             </span>
           </div>
-          <h1 className="text-xl font-bold text-white mb-2 leading-snug">{story.title}</h1>
-          {story.author && <p className="text-sm text-gray-400 mb-0.5">Tác giả: <span className="text-gray-300">{story.author}</span></p>}
-          {story.narrator && <p className="text-sm text-gray-400 mb-3">Đọc bởi: <span className="text-gray-300">{story.narrator}</span></p>}
-          <div className="flex items-center gap-4 text-sm text-gray-500 mb-4 flex-wrap">
-            <span className="flex items-center gap-1.5"><i className="ti ti-headphones" style={{ fontSize: 14 }} />{story.viewCount.toLocaleString()} lượt</span>
-            <span className="flex items-center gap-1.5"><i className="ti ti-list" style={{ fontSize: 14 }} />{story.totalChapters} tập</span>
-            {totalDuration > 0 && <span className="flex items-center gap-1.5"><i className="ti ti-clock" style={{ fontSize: 14 }} />{Math.floor(totalDuration/3600)}h{Math.floor((totalDuration%3600)/60)}p</span>}
+          <h1 className="text-base sm:text-xl font-bold text-white mb-1.5 sm:mb-2 leading-snug">{story.title}</h1>
+          {story.author && <p className="text-xs sm:text-sm text-gray-400 mb-0.5">Tác giả: <span className="text-gray-300">{story.author}</span></p>}
+          {story.narrator && <p className="text-xs sm:text-sm text-gray-400 mb-2 sm:mb-3">Đọc bởi: <span className="text-gray-300">{story.narrator}</span></p>}
+          <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4 flex-wrap">
+            <span className="flex items-center gap-1 sm:gap-1.5"><i className="ti ti-headphones" style={{ fontSize: 13 }} />{story.viewCount.toLocaleString()} lượt</span>
+            <span className="flex items-center gap-1 sm:gap-1.5"><i className="ti ti-list" style={{ fontSize: 13 }} />{story.totalChapters} tập</span>
+            {totalDuration > 0 && <span className="flex items-center gap-1 sm:gap-1.5"><i className="ti ti-clock" style={{ fontSize: 13 }} />{Math.floor(totalDuration/3600)}h{Math.floor((totalDuration%3600)/60)}p</span>}
           </div>
           <StoryActions storyId={story.id} firstChapterId={chapterList[0]?.id} storyTitle={story.title} isVip={!!isVip} firstChapterIsFree={chapterList[0]?.isFree ?? false} />
         </div>
       </div>
 
       {story.description && (
-        <div className="rounded-xl p-4 mb-5 text-sm text-gray-400 leading-relaxed border border-white/8" style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>
+        <div className="rounded-xl p-3 sm:p-4 mb-4 sm:mb-5 text-xs sm:text-sm text-gray-400 leading-relaxed border border-white/8" style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>
           {story.description}
         </div>
       )}

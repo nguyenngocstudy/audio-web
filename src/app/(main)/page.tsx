@@ -127,21 +127,21 @@ export default async function HomePage({
       )}
 
       {/* Genre filter */}
-      <div id="stories" className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
+      <div id="stories" className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 mb-4 sm:mb-6 scrollbar-hide">
         <a href="/"
-          className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+          className={`flex-shrink-0 flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all border ${
             !genre ? "text-white border-transparent shadow-lg" : "bg-white/5 border-gray-200/30 text-gray-400 hover:bg-white/10"
           }`}
           style={!genre ? { backgroundColor:"var(--accent)", borderColor:"var(--accent)" } : {}}>
-          <i className="ti ti-grid-3x3" style={{ fontSize:14 }} />Tất cả
+          <i className="ti ti-grid-3x3" style={{ fontSize:13 }} />Tất cả
         </a>
         {GENRES.map(([val, label]) => (
           <a key={val} href={`/?genre=${val}`}
-            className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+            className={`flex-shrink-0 flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all border ${
               genre === val ? "text-white border-transparent shadow-lg" : "bg-white/5 border-gray-200/30 text-gray-400 hover:bg-white/10"
             }`}
             style={genre === val ? { backgroundColor:"var(--accent)", borderColor:"var(--accent)" } : {}}>
-            <i className={`ti ${GENRE_ICONS[val] ?? "ti-bookmark"}`} style={{ fontSize:14 }} />
+            <i className={`ti ${GENRE_ICONS[val] ?? "ti-bookmark"}`} style={{ fontSize:13 }} />
             {label}
           </a>
         ))}
@@ -149,16 +149,16 @@ export default async function HomePage({
 
       {/* Trending (trang 1, không filter) */}
       {trending.length > 0 && (
-        <section className="mb-10">
-          <div className="flex items-center justify-between mb-4">
+        <section className="mb-6 sm:mb-10">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-500/20">
-                <i className="ti ti-trending-up text-orange-400" style={{ fontSize:16 }} />
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center bg-orange-500/20">
+                <i className="ti ti-trending-up text-orange-400" style={{ fontSize:15 }} />
               </div>
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">Xu hướng</h2>
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">Xu hướng</h2>
             </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
             {trending.map((s, i) => <StoryCard key={s.id} story={s} priority={i === 0} />)}
           </div>
         </section>
@@ -166,44 +166,44 @@ export default async function HomePage({
 
       {/* Story grid */}
       <section>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor:"var(--accent-light)" }}>
-              <i className="ti ti-books" style={{ color:"var(--accent)", fontSize:16 }} />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor:"var(--accent-light)" }}>
+              <i className="ti ti-books" style={{ color:"var(--accent)", fontSize:15 }} />
             </div>
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
               {genre ? (GENRE_LABEL[genre] ?? genre) : "Tất cả truyện"}
             </h2>
-            <span className="text-xs text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">
+            <span className="text-[10px] sm:text-xs text-gray-400 bg-gray-100 dark:bg-gray-800 px-1.5 sm:px-2 py-0.5 rounded-full">
               {total}
             </span>
           </div>
-          <span className="text-xs text-gray-500">Trang {page}/{totalPages || 1}</span>
+          <span className="text-[10px] sm:text-xs text-gray-500">Trang {page}/{totalPages || 1}</span>
         </div>
 
         {allStories.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
             {allStories.map(s => <StoryCard key={s.id} story={s} />)}
           </div>
         ) : (
-          <div className="text-center py-20 text-gray-400">
-            <i className="ti ti-mood-empty block mb-3" style={{ fontSize:48 }} />
-            <p className="font-medium">Chưa có truyện nào</p>
+          <div className="text-center py-16 sm:py-20 text-gray-400">
+            <i className="ti ti-mood-empty block mb-3" style={{ fontSize:40 }} />
+            <p className="font-medium text-sm sm:text-base">Chưa có truyện nào</p>
           </div>
         )}
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-10">
+          <div className="flex items-center justify-center gap-1.5 sm:gap-2 mt-6 sm:mt-10">
             {/* Prev */}
             {page > 1 ? (
               <a href={pageUrl(page - 1)}
-                className="flex items-center gap-1 px-4 py-2 rounded-xl border border-white/15 text-sm text-gray-300 hover:text-white hover:border-white/30 transition-all">
-                <i className="ti ti-chevron-left" style={{ fontSize:15 }} />Trước
+                className="flex items-center gap-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-white/15 text-xs sm:text-sm text-gray-300 hover:text-white hover:border-white/30 transition-all">
+                <i className="ti ti-chevron-left" style={{ fontSize:14 }} />Trước
               </a>
             ) : (
-              <span className="flex items-center gap-1 px-4 py-2 rounded-xl border border-white/5 text-sm text-gray-600 cursor-not-allowed">
-                <i className="ti ti-chevron-left" style={{ fontSize:15 }} />Trước
+              <span className="flex items-center gap-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-white/5 text-xs sm:text-sm text-gray-600 cursor-not-allowed">
+                <i className="ti ti-chevron-left" style={{ fontSize:14 }} />Trước
               </span>
             )}
 
@@ -216,10 +216,10 @@ export default async function HomePage({
                 return acc;
               }, [])
               .map((p, idx) => p === "..." ? (
-                <span key={`dots-${idx}`} className="px-2 py-2 text-gray-600 text-sm">...</span>
+                <span key={`dots-${idx}`} className="px-1.5 sm:px-2 py-1.5 sm:py-2 text-gray-600 text-xs sm:text-sm">...</span>
               ) : (
                 <a key={p} href={pageUrl(p as number)}
-                  className={`w-9 h-9 flex items-center justify-center rounded-xl text-sm font-medium transition-all ${
+                  className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl text-xs sm:text-sm font-medium transition-all ${
                     p === page ? "text-white shadow-lg" : "text-gray-400 border border-white/15 hover:text-white hover:border-white/30"
                   }`}
                   style={p === page ? { backgroundColor:"var(--accent)" } : {}}>
@@ -231,12 +231,12 @@ export default async function HomePage({
             {/* Next */}
             {page < totalPages ? (
               <a href={pageUrl(page + 1)}
-                className="flex items-center gap-1 px-4 py-2 rounded-xl border border-white/15 text-sm text-gray-300 hover:text-white hover:border-white/30 transition-all">
-                Sau<i className="ti ti-chevron-right" style={{ fontSize:15 }} />
+                className="flex items-center gap-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-white/15 text-xs sm:text-sm text-gray-300 hover:text-white hover:border-white/30 transition-all">
+                Sau<i className="ti ti-chevron-right" style={{ fontSize:14 }} />
               </a>
             ) : (
-              <span className="flex items-center gap-1 px-4 py-2 rounded-xl border border-white/5 text-sm text-gray-600 cursor-not-allowed">
-                Sau<i className="ti ti-chevron-right" style={{ fontSize:15 }} />
+              <span className="flex items-center gap-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-white/5 text-xs sm:text-sm text-gray-600 cursor-not-allowed">
+                Sau<i className="ti ti-chevron-right" style={{ fontSize:14 }} />
               </span>
             )}
           </div>

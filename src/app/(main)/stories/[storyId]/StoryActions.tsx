@@ -51,8 +51,8 @@ export default function StoryActions({ storyId, firstChapterId, storyTitle, isVi
 
         {showShare && (
           <>
-            <div className="fixed inset-0 z-40" onClick={() => setShowShare(false)} />
-            <div className="absolute left-0 top-11 z-50 w-72 rounded-xl border border-white/15 p-4 shadow-xl"
+            <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setShowShare(false)} />
+            <div className="fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] max-w-72 -translate-x-1/2 -translate-y-1/2 rounded-xl border border-white/15 p-4 shadow-xl"
               style={{ backgroundColor: "rgba(20,20,35,0.98)", backdropFilter: "blur(12px)" }}>
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm font-semibold text-white">Chia sẻ truyện</p>
