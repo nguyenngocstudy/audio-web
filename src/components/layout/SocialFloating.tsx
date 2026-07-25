@@ -13,7 +13,7 @@ const socialLinks = [
 
 export default function SocialFloating() {
   return (
-    <div className="fixed right-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3">
+    <div className="fixed right-4 bottom-20 z-50 flex flex-col gap-3">
       {socialLinks.map((link) => (
         <a
           key={link.label}
