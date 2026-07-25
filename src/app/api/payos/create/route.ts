@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     const paymentLink = await payos.createPaymentLink({
       orderCode,
       amount:      plan.price,
-      description: plan.label.slice(0, 25),
+      description: String(orderCode),
       returnUrl:   `${appUrl}/vip/success`,
       cancelUrl:   `${appUrl}/vip?cancelled=1`,
     });
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
       bin:         paymentLink.bin,           // Bank BIN
       bankName:    (paymentLink as any).bankName ?? "",
       amount:      plan.price,
-      description: plan.label,
+      description: String(orderCode),
     });
   } catch (err: any) {
     console.error("[PayOS Create] Error:", err?.response?.data ?? err);
