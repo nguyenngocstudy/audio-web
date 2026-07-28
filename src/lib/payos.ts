@@ -7,6 +7,7 @@ export const payos = new PayOS(
 );
 
 export const PLANS = {
+  weekly:    { label: "VIP 1 tuan",    price: 20000,  days: 7,   coins: 0 },
   monthly:   { label: "VIP 1 thang",   price: 37000,  days: 30,  coins: 0 },
   quarterly: { label: "VIP 3 thang",   price: 99000, days: 90,  coins: 0 },
   biannual:  { label: "VIP 6 thang",   price: 169000, days: 180, coins: 0 },
