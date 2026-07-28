@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { fmtVnd } from "@/lib/utils";
 
 const PLANS = [
-  { key:"threedays", label:"3 ngày",   price:14000,  pricePerMonth:140000, days:3,   discount:null,   badge:null,             badgeColor:"" },
-  { key:"weekly",    label:"1 tuần",   price:20000,  pricePerMonth:80000,  days:7,   discount:null,   badge:null,             badgeColor:"" },
+  { key:"threedays", label:"3 ngày",   price:14000,  pricePerMonth:14000, days:3,   discount:null,   badge:null,             badgeColor:"" },
+  { key:"weekly",    label:"1 tuần",   price:20000,  pricePerMonth:20000,  days:7,   discount:null,   badge:null,             badgeColor:"" },
   { key:"monthly",   label:"1 tháng",  price:37000,  pricePerMonth:37000,  days:30,  discount:null,   badge:null,             badgeColor:"" },
   { key:"quarterly", label:"3 tháng",  price:99000,  pricePerMonth:33000,  days:90,  discount:"-11%", badge:"Phổ biến",       badgeColor:"bg-orange-500" },
   { key:"biannual",  label:"6 tháng",  price:169000, pricePerMonth:28167,  days:180, discount:"-24%", badge:null,             badgeColor:"" },
