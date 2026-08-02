@@ -91,9 +91,13 @@ function PaymentPopup({ data, onSuccess, onClose }: {
 
     pollRef.current = setInterval(async () => {
       countRef.current++;
-      if (countRef.current >= 60) { clearInterval(pollRef.current); return; }
+      if (countRef.current >= 450) { clearInterval(pollRef.current); return; } // 450 x 2s = 15 phút (hết hạn link)
       try {
-        const res  = await fetch("/api/payos/check", { method: "POST" });
+        const res  = await fetch("/api/payos/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderCode: data.orderCode }),
+        });
         const json = await res.json();
         if (json.status === "paid" || json.activated || json.alreadyPaid) {
           clearInterval(pollRef.current);
@@ -110,7 +114,11 @@ function PaymentPopup({ data, onSuccess, onClose }: {
   async function manualCheck() {
     setChecking(true);
     try {
-      const res  = await fetch("/api/payos/check", { method: "POST" });
+      const res  = await fetch("/api/payos/check", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderCode: data.orderCode }),
+      });
       const json = await res.json();
       if (json.status === "paid" || json.activated || json.alreadyPaid) {
         clearInterval(pollRef.current);

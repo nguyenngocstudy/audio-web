@@ -2,13 +2,24 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 export default function VipSuccessPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[70vh]" />}>
+      <VipSuccessForm />
+    </Suspense>
+  );
+}
+
+function VipSuccessForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const orderCode = searchParams.get("orderCode") ?? undefined;
   const [status, setStatus]   = useState<"checking" | "paid" | "pending" | "error">("checking");
   const [retries, setRetries] = useState(0);
-  const MAX_RETRIES = 10;
+  const MAX_RETRIES = 30;
 
   useEffect(() => {
     checkPayment();
@@ -16,7 +27,11 @@ export default function VipSuccessPage() {
 
   async function checkPayment() {
     try {
-      const res = await fetch("/api/payos/check", { method: "POST" });
+      const res = await fetch("/api/payos/check", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderCode }),
+      });
       const data = await res.json();
       console.log("[VIP Success] Check result:", data);
 

@@ -30,15 +30,11 @@ export async function POST(req: NextRequest) {
   if (process.env.PAYOS_CHECKSUM_KEY) {
     try {
       const { payos } = await import("@/lib/payos");
-      const verified = payos.verifyPaymentWebhookData(parsed);
-      console.log("[PayOS Webhook] Signature verified:", verified);
-      if (!verified) {
-        console.error("[PayOS Webhook] Invalid signature");
-        return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
-      }
+      payos.verifyPaymentWebhookData(parsed);
+      console.log("[PayOS Webhook] Signature verified");
     } catch (err) {
-      console.error("[PayOS Webhook] Verify error:", err);
-      // Continue without verification if payos lib fails
+      console.error("[PayOS Webhook] Invalid signature:", err);
+      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
   } else {
     console.warn("[PayOS Webhook] PAYOS_CHECKSUM_KEY not set - skipping verification");
@@ -85,11 +81,15 @@ export async function POST(req: NextRequest) {
 
     if (txn.type === "subscription") {
       const days = meta.days ?? 30;
-      const vipUntil = new Date(Date.now() + days * 86400000);
+      const [u] = await db.select({ vipUntil: users.vipUntil })
+        .from(users).where(eq(users.id, txn.userId)).limit(1);
+      // Nối thêm vào VIP hiện tại thay vì ghi đè từ thời điểm mua
+      const base = new Date(Math.max(u?.vipUntil?.getTime() ?? 0, Date.now()));
+      const vipUntil = new Date(base.getTime() + days * 86400000);
       await db.update(users)
         .set({ vipUntil })
         .where(eq(users.id, txn.userId));
-      console.log("[PayOS Webhook] VIP activated until:", vipUntil, "for user:", txn.userId);
+      console.log("[PayOS Webhook] VIP extended until:", vipUntil, "for user:", txn.userId);
     } else if (txn.type === "coin_topup" && txn.coinAmount) {
       const [u] = await db.select({ coinBalance: users.coinBalance })
         .from(users).where(eq(users.id, txn.userId)).limit(1);

@@ -36,8 +36,9 @@ export async function POST(req: NextRequest) {
       orderCode,
       amount:      plan.price,
       description: String(orderCode),
-      returnUrl:   `${appUrl}/vip/success`,
+      returnUrl:   `${appUrl}/vip/success?orderCode=${orderCode}`,
       cancelUrl:   `${appUrl}/vip?cancelled=1`,
+      expiredAt:   Math.floor(Date.now() / 1000) + 15 * 60, // 15 phút tính từ bây giờ
     });
 
     console.log("[PayOS Create] Created:", paymentLink.checkoutUrl);
