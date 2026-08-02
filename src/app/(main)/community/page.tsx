@@ -281,6 +281,16 @@ export default function CommunityPage() {
           <p className="text-sm text-gray-500">Thảo luận, đề xuất và hỏi đáp</p>
         </div>
       </div>
+      <div className="flex items-center gap-3 mb-6">
+        <i className="ti ti-brand-facebook text-blue-400" style={{ fontSize: 18 }} />
+        <p> Mọi thắc mắc xin liên hệ </p>
+          <a href="https://www.facebook.com/profile.php?id=61591005877946" target="_blank" rel="noopener noreferrer"
+        className="flex items-center gap-2 text-sm text-gray-400 hover:text-blue-400 transition-colors">
+          <span className="text-blue-400 underline">peakaudio</span>
+      </a>
+      </div>
+      {/* Contact */}
+    
 
       {/* Compose box */}
       <div className="rounded-2xl border border-white/10 p-4 mb-5"
