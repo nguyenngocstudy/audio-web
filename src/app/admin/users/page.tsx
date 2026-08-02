@@ -5,6 +5,7 @@ import { desc, sql, ilike, or } from "drizzle-orm";
 import Badge from "@/components/ui/Badge";
 import { fmtDate } from "@/lib/utils";
 import Link from "next/link";
+import UpgradeUserModal from "./UpgradeUserModal";
 
 const PAGE_SIZE = 10;
 
@@ -58,7 +59,7 @@ export default async function AdminUsersPage({
         <div className="overflow-x-auto">
           <table className="w-full text-xs sm:text-sm">
             <thead><tr className="bg-gray-50 border-b border-gray-100">
-              {["Người dùng", "Coin", "VIP đến", "Loại", "Ngày tham gia"].map(h => (
+              {["Người dùng", "Coin", "VIP đến", "Loại", "Ngày tham gia", "Thao tác"].map(h => (
                 <th key={h} className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 whitespace-nowrap">{h}</th>
               ))}
             </tr></thead>
@@ -92,11 +93,16 @@ export default async function AdminUsersPage({
                           : <Badge variant="neutral">Free</Badge>}
                     </td>
                     <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-gray-400 text-[10px] sm:text-xs whitespace-nowrap">{fmtDate(u.createdAt)}</td>
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3">
+                      <UpgradeUserModal
+                        user={{ id: u.id, name: u.name, email: u.email, vipUntil: u.vipUntil }}
+                      />
+                    </td>
                   </tr>
                 );
               })}
               {data.length === 0 && (
-                <tr><td colSpan={5} className="py-8 sm:py-12 text-center text-gray-400 text-sm">Chưa có người dùng</td></tr>
+                <tr><td colSpan={6} className="py-8 sm:py-12 text-center text-gray-400 text-sm">Chưa có người dùng</td></tr>
               )}
             </tbody>
           </table>
