@@ -1,32 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { transactions, users } from "@/lib/schema";
+import { transactions } from "@/lib/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { payos } from "@/lib/payos";
+import { activateTxnIfPending } from "@/lib/payos-activate";
 
 export const dynamic = "force-dynamic";
-
-async function activateTxn(txn: typeof transactions.$inferSelect) {
-  const meta = txn.metadata ? JSON.parse(txn.metadata) : {};
-  if (txn.type === "subscription") {
-    const days = meta.days ?? 30;
-    const [u] = await db.select({ vipUntil: users.vipUntil })
-      .from(users).where(eq(users.id, txn.userId)).limit(1);
-    // Nối thêm vào VIP hiện tại thay vì ghi đè từ thời điểm mua
-    const base = new Date(Math.max(u?.vipUntil?.getTime() ?? 0, Date.now()));
-    const vipUntil = new Date(base.getTime() + days * 86400000);
-    await db.update(users).set({ vipUntil }).where(eq(users.id, txn.userId));
-    console.log("[PayOS Check] VIP extended until:", vipUntil, "user:", txn.userId);
-  } else if (txn.type === "coin_topup" && txn.coinAmount) {
-    const [u] = await db.select({ coinBalance: users.coinBalance })
-      .from(users).where(eq(users.id, txn.userId)).limit(1);
-    await db.update(users)
-      .set({ coinBalance: (u?.coinBalance ?? 0) + txn.coinAmount })
-      .where(eq(users.id, txn.userId));
-    console.log("[PayOS Check] Coins added:", txn.coinAmount, "user:", txn.userId);
-  }
-}
 
 // User calls this to check & sync payment status
 export async function POST(req: NextRequest) {
@@ -56,11 +36,8 @@ export async function POST(req: NextRequest) {
       console.log("[PayOS Check] PayOS status:", paymentInfo?.status);
 
       if (paymentInfo?.status === "PAID") {
-        await db.update(transactions)
-          .set({ status: "paid", paidAt: new Date() })
-          .where(eq(transactions.id, txn.id));
-        await activateTxn(txn);
-        return NextResponse.json({ status: "paid", activated: true });
+        const activated = await activateTxnIfPending(txn);
+        return NextResponse.json({ status: "paid", activated });
       }
       return NextResponse.json({ status: paymentInfo?.status ?? "pending" });
     }
@@ -87,11 +64,8 @@ export async function POST(req: NextRequest) {
         console.log("[PayOS Check] PayOS status:", paymentInfo?.status);
 
         if (paymentInfo?.status === "PAID") {
-          await db.update(transactions)
-            .set({ status: "paid", paidAt: new Date() })
-            .where(eq(transactions.id, txn.id));
-          await activateTxn(txn);
-          activated = true;
+          const didActivate = await activateTxnIfPending(txn);
+          activated = activated || didActivate;
           break;
         }
         if (paymentInfo?.status === "CANCELLED") {

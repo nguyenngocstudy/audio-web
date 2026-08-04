@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { transactions, users } from "@/lib/schema";
+import { transactions } from "@/lib/schema";
 import { eq } from "drizzle-orm";
+import { activateTxnIfPending } from "@/lib/payos-activate";
 
 export const dynamic = "force-dynamic";
 
@@ -68,36 +69,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    // Mark as paid
-    await db.update(transactions)
-      .set({ status: "paid", paidAt: new Date() })
-      .where(eq(transactions.id, txn.id));
+    // Kích hoạt quyền lợi (atomic: chỉ 1 request duy nhất được kích hoạt,
+    // tránh cộng dồn VIP khi webhook chạy đồng thời với route check)
+    const activated = await activateTxnIfPending(txn);
 
-    console.log("[PayOS Webhook] Marked as paid:", txn.id);
-
-    // Activate benefit
-    const meta = txn.metadata ? JSON.parse(txn.metadata) : {};
-    console.log("[PayOS Webhook] Metadata:", meta, "Type:", txn.type);
-
-    if (txn.type === "subscription") {
-      const days = meta.days ?? 30;
-      const [u] = await db.select({ vipUntil: users.vipUntil })
-        .from(users).where(eq(users.id, txn.userId)).limit(1);
-      // Nối thêm vào VIP hiện tại thay vì ghi đè từ thời điểm mua
-      const base = new Date(Math.max(u?.vipUntil?.getTime() ?? 0, Date.now()));
-      const vipUntil = new Date(base.getTime() + days * 86400000);
-      await db.update(users)
-        .set({ vipUntil })
-        .where(eq(users.id, txn.userId));
-      console.log("[PayOS Webhook] VIP extended until:", vipUntil, "for user:", txn.userId);
-    } else if (txn.type === "coin_topup" && txn.coinAmount) {
-      const [u] = await db.select({ coinBalance: users.coinBalance })
-        .from(users).where(eq(users.id, txn.userId)).limit(1);
-      const newBalance = (u?.coinBalance ?? 0) + txn.coinAmount;
-      await db.update(users)
-        .set({ coinBalance: newBalance })
-        .where(eq(users.id, txn.userId));
-      console.log("[PayOS Webhook] Coins added:", txn.coinAmount, "new balance:", newBalance);
+    if (activated) {
+      console.log("[PayOS Webhook] Marked as paid:", txn.id);
+    } else {
+      console.log("[PayOS Webhook] Transaction already processed, skipping:", txn.id);
     }
 
     return NextResponse.json({ ok: true });
