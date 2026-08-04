@@ -35,7 +35,7 @@ interface PaymentData {
 }
 
 // ── QR Canvas Component ───────────────────────────────────────────────────────
-function QRCanvas({ value }: { value: string }) {
+function QRCanvas({ value, onCanvas }: { value: string; onCanvas?: (c: HTMLCanvasElement) => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [ready, setReady] = useState(false);
   const [err, setErr]     = useState(false);
@@ -48,7 +48,11 @@ function QRCanvas({ value }: { value: string }) {
         canvasRef.current,
         value,
         { width: 176, margin: 1, color: { dark: "#000000", light: "#ffffff" } },
-        (e: any) => { if (e) { console.error(e); setErr(true); } else setReady(true); }
+        (e: any) => {
+          if (e) { console.error(e); setErr(true); return; }
+          setReady(true);
+          if (canvasRef.current) onCanvas?.(canvasRef.current);
+        }
       );
     }).catch(() => setErr(true));
   }, [value]);
@@ -84,6 +88,19 @@ function PaymentPopup({ data, onSuccess, onClose }: {
   const pollRef  = useRef<NodeJS.Timeout>();
   const dotsRef  = useRef<NodeJS.Timeout>();
   const countRef = useRef(0);
+  const qrCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  function downloadQR() {
+    const canvas = qrCanvasRef.current;
+    if (!canvas) return;
+    const url = canvas.toDataURL("image/png");
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `vip-qr-${data.orderCode ?? "payos"}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
 
   useEffect(() => {
     dotsRef.current = setInterval(() =>
@@ -181,7 +198,7 @@ function PaymentPopup({ data, onSuccess, onClose }: {
             <div className="flex justify-center px-8 py-4">
               <div className="bg-white rounded-2xl p-3 shadow-lg flex items-center justify-center min-h-[176px]">
                 {data.qrCode
-                  ? <QRCanvas value={data.qrCode} />
+                  ? <QRCanvas value={data.qrCode} onCanvas={c => { qrCanvasRef.current = c; }} />
                   : (
                     <div className="w-44 h-44 flex flex-col items-center justify-center gap-3 text-gray-400">
                       <i className="ti ti-qrcode text-gray-300" style={{ fontSize:52 }} />
@@ -225,7 +242,13 @@ function PaymentPopup({ data, onSuccess, onClose }: {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-center gap-4 pb-4">
+            <div className="flex items-center justify-center gap-4 pb-4 flex-wrap">
+              <button onClick={downloadQR} disabled={!qrCanvasRef.current}
+                className="flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 transition-colors disabled:opacity-50">
+                <i className="ti ti-download" style={{ fontSize:13 }} />
+                Tải mã QR
+              </button>
+              <span className="text-gray-700 text-xs">·</span>
               <button onClick={manualCheck} disabled={checking}
                 className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-amber-400 transition-colors disabled:opacity-50">
                 <i className={`ti ti-refresh ${checking ? "animate-spin":""}`} style={{ fontSize:13 }} />
